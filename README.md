@@ -3,7 +3,7 @@
 ## Members
 * [Wonseon Lim](https://github.com/laymond1)
 * [Heon-Sung Park](https://github.com/hopo55)
-* [Sang-Hyeong Jin]()   
+* [Sang-Hyeong Jin](https://github.com/feVeRin)   
 
 ## Goal
 
