@@ -3,7 +3,9 @@
 ## Members
 * [Wonseon Lim](https://github.com/laymond1)
 * [Heon-Sung Park](https://github.com/hopo55)
-* [Sang-Hyeong Jin](https://github.com/feVeRin)   
+* [Sang-Hyeong Jin](https://github.com/feVeRin)
+* Jaegyun Park
+* [Hanyong Lee](https://github.com/lhy0718)
 
 ## Goal
 
