@@ -10,7 +10,9 @@ import itertools
 import warnings
 import multiprocessing as python_multiprocessing
 import torch
-from torch import string_classes
+if torch.__version__[0] == '2':
+    from torch import string_classes
+else: from torch._six import string_classes
 import torch.multiprocessing as multiprocessing
 from torch.multiprocessing import Queue as queue
 from torch._utils import ExceptionWrapper
