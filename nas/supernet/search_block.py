@@ -2,16 +2,24 @@ import torch
 import torch.nn as nn
 
 from yolov7_utils.common import Conv, Concat
+from nas.supernet.dynamic_layers.dynamic_op import DynamicConv2d, DynamicBatchNorm2d
+
+
+class ELAN(nn.Module):
+    def __init__(self, c1, c2, k, depth):
+        super(ELAN, self).__init__()
+        assert c1 % 2 == 0
+        self.c2 = c2
+        self.depth = depth
 
 
 # ELANBlock for Backbone
-class BBoneELAN(nn.Module):
+class BBoneELAN(ELAN):
     def __init__(self, c1, c2, k, depth):
-        super(BBoneELAN, self).__init__()
+        super(BBoneELAN, self).__init__(c1, c2, k, depth)
         assert c1 % 2 == 0 and depth < 5
-        c_ = int(c1 / 2)
         
-        self.depth = depth
+        layers = []
         
         # depth 1
         self.cv1 = Conv(c1, c2, 1, 1)
@@ -25,14 +33,23 @@ class BBoneELAN(nn.Module):
         # depth 4
         self.cv7 = Conv(c2, c2, k, 1)
         self.cv8 = Conv(c2, c2, k, 1)
-        # transition layer
-        # TODO need to calculate the number of filter depending on depth at SuperNet class
-        # DynamicConv2d를 사용하고 max_in_C 로 놓고, 
-        # self.trans = Conv(c_, c2, 1, 1)
         
         self.act_idx = [0, 1, 3, 5, 7][:depth+1] 
     
-    def forward(self, x):
+        layers.append(self.cv1)
+        layers.append(self.cv2)
+        layers.append(self.cv3)
+        layers.append(self.cv4)
+        layers.append(self.cv5)
+        layers.append(self.cv6)
+        layers.append(self.cv7)
+        layers.append(self.cv8)
+        self.layers = nn.Sequential(*layers)
+    
+    def get_active_net(self):
+        raise NotImplementedError
+    
+    def forward(self, x, d=None):
         outputs = []
         # depth 1
         x1 = self.cv1(x)
@@ -55,16 +72,19 @@ class BBoneELAN(nn.Module):
         x8 = self.cv8(x7)
         outputs.append(x8)
         
+        if d is not None:
+            return torch.cat([outputs[i] for i in self.act_idx[:d+1]], dim=1)
         return torch.cat([outputs[i] for i in self.act_idx], dim=1)
 
 
 # ELANBlock for Head
 # there are differences about cardinality(path) and channel size
-class HeadELAN(nn.Module):
+class HeadELAN(ELAN):
     def __init__(self, c1, c2, k, depth):
-        super(HeadELAN, self).__init__()
+        super(HeadELAN, self).__init__(c1, c2, k, depth)
         assert c1 % 2 == 0 and c2 % 2 == 0 and depth < 6
         c_ = int(c2 / 2)
+        self.c2 = c2
         self.depth = depth
         
         # depth 1
@@ -81,7 +101,7 @@ class HeadELAN(nn.Module):
         
         self.act_idx = [0, 1, 2, 3, 4, 5, 6][:depth+1] 
     
-    def forward(self, x):
+    def forward(self, x, d=None):
         outputs = []
         # depth 1
         x1 = self.cv1(x)
@@ -101,4 +121,22 @@ class HeadELAN(nn.Module):
         x6 = self.cv6(x5)
         outputs.append(x6)
         
+        if d is not None:
+            return torch.cat([outputs[i] for i in self.act_idx[:d+1]], dim=1)
         return torch.cat([outputs[i] for i in self.act_idx], dim=1)
+    
+    
+# Dynamic Convolution for elastic channel size
+class DyConv(nn.Module):
+    # Dynamic Convolution for elastic channel size
+    def __init__(self, c1, c2, k=1, s=1, act=True):  # ch_in, ch_out, kernel, stride
+        super(DyConv, self).__init__()
+        self.conv = DynamicConv2d(c1, c2, k, s) # auto same padding
+        self.bn = DynamicBatchNorm2d(c2)
+        self.act = nn.SiLU() if act is True else (act if isinstance(act, nn.Module) else nn.Identity())
+
+    def forward(self, x):
+        return self.act(self.bn(self.conv(x)))
+
+    def fuseforward(self, x):
+        return self.act(self.conv(x))

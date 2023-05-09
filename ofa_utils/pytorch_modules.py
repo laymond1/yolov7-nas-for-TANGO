@@ -53,6 +53,8 @@ def build_activation(act_func, inplace=True):
         return Hswish(inplace=inplace)
     elif act_func == "h_sigmoid":
         return Hsigmoid(inplace=inplace)
+    elif act_func == "silu":
+        return nn.SiLU(inplace=inplace)
     elif act_func is None or act_func == "none":
         return None
     else:

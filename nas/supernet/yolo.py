@@ -35,7 +35,7 @@ from ofa_utils.layers import (
 from ofa_utils import MyNetwork, make_divisible, MyGlobalAvgPool2d
 
 ## search_block.py
-from search_block import BBoneELAN, HeadELAN
+from search_block import BBoneELAN, HeadELAN, DyConv
 
 
 class Detect(nn.Module):
@@ -768,7 +768,7 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
                 pass
 
         n = max(round(n * gd), 1) if n > 1 else n  # depth gain
-        if m in [nn.Conv2d, Conv, RobustConv, RobustConv2, DWConv, GhostConv, RepConv, RepConv_OREPA, DownC, 
+        if m in [nn.Conv2d, Conv, DyConv, RobustConv, RobustConv2, DWConv, GhostConv, RepConv, RepConv_OREPA, DownC, 
                  SPP, SPPF, SPPCSPC, GhostSPPCSPC, MixConv2d, Focus, Stem, GhostStem, CrossConv, 
                  Bottleneck, BottleneckCSPA, BottleneckCSPB, BottleneckCSPC, 
                  RepBottleneck, RepBottleneckCSPA, RepBottleneckCSPB, RepBottleneckCSPC,  
