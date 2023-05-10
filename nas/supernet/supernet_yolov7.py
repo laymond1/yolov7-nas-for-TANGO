@@ -44,7 +44,7 @@ from typing import List, Tuple, Union, Optional, Callable, Any
 from nas.supernet.yolo import *
 
 ## search_block.py
-from search_block import ELAN, BBoneELAN, HeadELAN
+from search_block import ELAN, ELANBlock, BBoneELAN, HeadELAN
 
 class YOLOSuperNet(YOLOModel):
     def __init__(
@@ -140,37 +140,46 @@ class YOLOSuperNet(YOLOModel):
     
     # TODO : need to be implemented
     def get_active_subnet(self, preserve_weight=True):
-        elan_idx = 0
-        for i, m in enumerate(self.model):
-            if isinstance(m, ELAN):
-                depth = self.runtime_depth[elan_idx]
-                act_idx = m.act_idx[depth]
-                m = ELANBlock(deepcopy(m.layers[:act_idx+1]), depth)
-                elan_idx += 1
-                # m = ELAN(deepcopy(m.layers[:depth+1]))
-                
-                # depth = 3
-                # act_idx = b_block.act_idx[depth]
-                # layers = deepcopy(b_block.layers[:act_idx+1])
-                # block = ELANBlock(layers, depth)
+        # define subnet
+        config = self.get_active_net_config()
+        ch = config['ch']
+        subnet = YOLOModel(cfg=config, ch=[ch])
         
-        raise NotImplementedError
+        if preserve_weight:
+            # extract ELANBlock
+            elan_idx = 0
+            model = deepcopy(self.model)
+            for i, m in enumerate(model):
+                if isinstance(m, ELAN):
+                    depth = self.runtime_depth[elan_idx]
+                    act_idx = m.act_idx[depth]
+                    model[i] = ELANBlock(m.mode, deepcopy(m.layers[:act_idx+1]), depth)
+                    model[i].i, model[i].f, model[i].type, model[i].np = m.i, m.f, m.type, m.np
+                    elan_idx += 1
+            subnet.model = model
+        
+        return subnet
     
 
 if __name__ == "__main__":
-    profile=True
+    profile=False
     device = select_device('0')
     
     # Create model
     supernet = YOLOSuperNet(cfg='./yaml/yolov7_dynamicsupernet.yml').to(device)
     supernet.train()
     sample_depth_setting = supernet.sample_active_subnet()   
-    # subnet = supernet.get_active_subnet()
+    subnet = supernet.get_active_subnet()
     print(sample_depth_setting)
     
     if profile:
         img = torch.rand(1, 3, 640, 640).to(device)
-        y = supernet(img, profile=True)
+        y = supernet(img, profile=profile)
+        y = subnet(img, profile=profile)
+    
+    img = torch.rand(1, 3, 640, 640).to(device)
+    y = supernet(img, profile=profile)
+    y = subnet(img)
         
     sample_config = supernet.get_active_net_config()
     
