@@ -44,7 +44,7 @@ from typing import List, Tuple, Union, Optional, Callable, Any
 from nas.supernet.yolo import *
 
 ## search_block.py
-from search_block import ELAN, ELANBlock, BBoneELAN, HeadELAN
+from .search_block import ELAN, ELANBlock, BBoneELAN, HeadELAN
 
 class YOLOSuperNet(YOLOModel):
     def __init__(
