@@ -35,7 +35,7 @@ from ofa_utils.layers import (
 from ofa_utils import MyNetwork, make_divisible, MyGlobalAvgPool2d
 
 ## search_block.py
-from search_block import BBoneELAN, HeadELAN, DyConv
+from .search_block import BBoneELAN, HeadELAN, DyConv
 
 
 class Detect(nn.Module):
