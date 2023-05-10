@@ -21,21 +21,7 @@ except ImportError:
     thop = None
 
 ## libraries from OFA code
-import copy
 import random
-
-from ofa.imagenet_classification.elastic_nn.modules.dynamic_layers import (
-    DynamicMBConvLayer,
-)
-from ofa.utils.layers import (
-    ConvLayer,
-    IdentityLayer,
-    LinearLayer,
-    MBConvLayer,
-    ResidualBlock,
-)
-from ofa.imagenet_classification.networks import MobileNetV3
-from ofa.utils import make_divisible, val2list, MyNetwork
 
 ## libraries for type hint
 from typing import List, Tuple, Union, Optional, Callable, Any
@@ -44,17 +30,40 @@ from typing import List, Tuple, Union, Optional, Callable, Any
 from nas.supernet.yolo import *
 
 ## search_block.py
-from search_block import ELAN, ELANBlock, BBoneELAN, HeadELAN
+from .search_block import ELAN, ELANBlock
+
 
 class YOLOSuperNet(YOLOModel):
+    """ Create YOLOv7-based SuperNet 
+
+    Args:
+    -----------
+    cfg: str
+        path to yolo supernet yaml file
+    ch: int
+        number of input channels
+    nc: int
+        number of classes
+    anchors: 2d-list
+        anchors : np * 3(anchros/floor) * 2(width & height)
+
+    Attributes:
+    -----------
+    model: nn.Sequential
+        a sequence of nn.modules, i.e. YOLOSuperNet modules 
+    save: list
+        indice of jumping points to use for forward pass
+    depth_list: list of int
+        list of depth for each ELANBlock
+    runtime_depth: list of int
+        list of depth for each ELANBlock of subnetwork, but initialized int at first
+    """     
     def __init__(
         self,
-        cfg='./yaml/yolov7_dynamicsupernet.yml', 
+        cfg='./yaml/yolov7_supernet.yml', 
         ch=3, 
         nc=None, 
         anchors=None,
-        ks_list=3,
-        depth_list=[3,3,3,3,5,5,5,5]
         ):
         
         self.runtime_depth = 0
@@ -64,7 +73,6 @@ class YOLOSuperNet(YOLOModel):
         self.depth_list = self.yaml['depth_list']
         self.set_max_net()
         
-    # Override
     def forward_once(self, x, profile=False):
         y, dt = [], []  # outputs
         elan_idx = 0
@@ -90,12 +98,12 @@ class YOLOSuperNet(YOLOModel):
                 dt.append((time_synchronized() - t) * 100)
                 print('%10.1f%10.0f%10.1fms %-40s' % (o, m.np, dt[-1], m.type))
 
-            if isinstance(m, ELAN) and isinstance(self.runtime_depth, list): # 
+            if isinstance(m, ELAN) and isinstance(self.runtime_depth, list): # subnetwork run
                 depth = self.runtime_depth[elan_idx]
                 elan_idx += 1
                 x = m(x, d=depth)
             else:
-                x = m(x)  # run
+                x = m(x)  # fullnetwork run
             
             y.append(x if m.i in self.save else None)  # save output
 
@@ -107,20 +115,16 @@ class YOLOSuperNet(YOLOModel):
         max_list = lambda x: [max(n) for n in x]
         self.set_active_subnet(d=max_list(self.depth_list))
         
-
     def set_active_subnet(self, d=None, **kwargs):
-        self.runtime_depth = d
-        # need to adjust the number of filters in the next layer
-        # adjust_width_next_layer()   # 굳이 필요 없음.     
+        self.runtime_depth = d   
         
-    
     def sample_active_subnet(self):       
         # sample depth
         depth_setting = []
         for d_set in self.depth_list:
             d = random.choice(d_set)
             depth_setting.append(d)
-        
+        # set active subnet
         self.set_active_subnet(depth_setting) # ex) [3, 2, 3, 1, 4, 4, 1, 3]
         
         return {"d": depth_setting}
@@ -133,14 +137,13 @@ class YOLOSuperNet(YOLOModel):
             if 'ELAN'in m:
                 args[-1] = self.runtime_depth[idx]
                 idx += 1
-        
+        # no more need depth_list(search space)
         del d['depth_list']
                 
         return d
     
-    # TODO : need to be implemented
     def get_active_subnet(self, preserve_weight=True):
-        # define subnet
+        # create subnet
         config = self.get_active_net_config()
         ch = config['ch']
         subnet = YOLOModel(cfg=config, ch=[ch])
@@ -166,7 +169,7 @@ if __name__ == "__main__":
     device = select_device('0')
     
     # Create model
-    supernet = YOLOSuperNet(cfg='./yaml/yolov7_dynamicsupernet.yml').to(device)
+    supernet = YOLOSuperNet(cfg='./yaml/yolov7_supernet.yml').to(device)
     supernet.train()
     sample_depth_setting = supernet.sample_active_subnet()   
     subnet = supernet.get_active_subnet()
