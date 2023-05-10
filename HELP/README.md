@@ -24,16 +24,21 @@ Hardware spec used for meta-training the proposed HELP model
 - CPU: Intel(R) Xeon(R) Silver 4114 CPU @ 2.20GHz
 
 ## Installation
-```
+```sh
 conda create --name help python=3.8 -y
 conda activate help
-conda install pytorch==1.8.1 torchvision cudatoolkit=10.2 -c pytorch -y
-pip install nas-bench-201 -y
-pip install tqdm -y
+# conda install pytorch==1.8.1 torchvision cudatoolkit=10.2 -c pytorch
+# 추가설치 (한용 추가)
+conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y
+pip install onnx
+######################
+pip install nas-bench-201
+pip install tqdm
 conda install scipy -y
 conda install pyyaml -y
 conda install tensorboard -y
 ```
+
 ## Contents
 [1. Experiments on NAS-Bench-201 Search Space](https://github.com/HayeonLee/HELP#1-reproduce-main-results-on-nas-bench-201-search-space)
 
