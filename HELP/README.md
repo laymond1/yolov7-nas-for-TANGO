@@ -27,10 +27,7 @@ Hardware spec used for meta-training the proposed HELP model
 ```sh
 conda create --name help python=3.8 -y
 conda activate help
-# conda install pytorch==1.8.1 torchvision cudatoolkit=10.2 -c pytorch
-# 추가설치 (한용 추가)
-conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y
-pip install onnx
+conda install pytorch==1.8.1 torchvision cudatoolkit=10.2 -c pytorch
 ######################
 pip install nas-bench-201
 pip install tqdm
