@@ -4,7 +4,7 @@ import yaml
 
 from nas.search_algorithm import EvolutionFinder
 from nas.supernet.supernet_yolov7 import YOLOSuperNet
-
+from predictors.efficiency_predictor import LatencyPredictor
 
 def parse_args():
     parser = argparse.ArgumentParser("autonn_supernet_nas")
@@ -24,8 +24,10 @@ def parse_args():
 
 
 def run_search(args):
-    constraint_type, efficiency_constraint, efficiency_predictor, accuracy_predictor = \
-        args.constraint_type, args.flops, args.efficiency_predictor, args.accuracy_predictor
+    constraint_type, efficiency_constraint, accuracy_predictor = \
+        args.constraint_type, args.flops, args.accuracy_predictor
+    
+    efficiency_predictor = LatencyPredictor(target="galaxy10")
     
     # build the evolution finder
     finder = EvolutionFinder(

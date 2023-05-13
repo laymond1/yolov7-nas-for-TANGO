@@ -117,8 +117,7 @@ class EvolutionFinder:
         constraint = self.efficiency_constraint
         while True:
             sample = self.arch_manager.random_sample()
-            # efficiency = self.efficiency_predictor.predict_efficiency(sample)
-            efficiency = random.uniform(100.0, 500.0)
+            efficiency = self.efficiency_predictor.predict_efficiency(sample)
             if efficiency <= constraint:
                 return sample, efficiency
 
@@ -131,8 +130,7 @@ class EvolutionFinder:
                 if random.random() < self.mutate_prob:
                     self.arch_manager.random_resample_depth(new_sample, i)
 
-            # efficiency = self.efficiency_predictor.predict_efficiency(new_sample)
-            efficiency = random.uniform(100.0, 500.0)
+            efficiency = self.efficiency_predictor.predict_efficiency(new_sample)
             if efficiency <= constraint:
                 return new_sample, efficiency
 
@@ -148,8 +146,7 @@ class EvolutionFinder:
                         [sample1[key][i], sample2[key][i]]
                     )
 
-            # efficiency = self.efficiency_predictor.predict_efficiency(new_sample)
-            efficiency = random.uniform(100.0, 500.0)
+            efficiency = self.efficiency_predictor.predict_efficiency(new_sample)
             if efficiency <= constraint:
                 return new_sample, efficiency
 
