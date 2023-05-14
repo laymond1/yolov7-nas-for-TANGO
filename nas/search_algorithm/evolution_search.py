@@ -7,7 +7,7 @@ import numpy as np
 class ArchManager:
     def __init__(self):
         self.num_blocks = [4, 4]
-        self.depths = [[1, 2, 3], [1, 2, 3, 4, 5]]
+        self.depths = [[3], [5]]
         # self.resolutions = [160, 176, 192, 208, 224]
 
     def random_sample(self):
@@ -170,8 +170,8 @@ class EvolutionFinder:
             child_pool.append(sample)
             efficiency_pool.append(efficiency)
 
-        # accs = self.accuracy_predictor.predict_accuracy(child_pool)
-        accs = [random.uniform(0.0, 1.0) for _ in range(len(child_pool))]
+        accs = self.accuracy_predictor.predict_accuracy(child_pool)
+        # accs = [random.uniform(0.0, 1.0) for _ in range(len(child_pool))]
         for i in range(population_size):
             # population.append((accs[i].item(), child_pool[i], efficiency_pool[i]))
             population.append((accs[i], child_pool[i], efficiency_pool[i]))
@@ -214,8 +214,8 @@ class EvolutionFinder:
                 child_pool.append(new_sample)
                 efficiency_pool.append(efficiency)
 
-            # accs = self.accuracy_predictor.predict_accuracy(child_pool)
-            accs = [random.uniform(0.0, 1.0) for _ in range(len(child_pool))]
+            accs = self.accuracy_predictor.predict_accuracy(child_pool)
+            # accs = [random.uniform(0.0, 1.0) for _ in range(len(child_pool))]
             for i in range(population_size):
                 # population.append((accs[i].item(), child_pool[i], efficiency_pool[i]))
                 population.append((accs[i], child_pool[i], efficiency_pool[i]))
