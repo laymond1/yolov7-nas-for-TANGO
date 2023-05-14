@@ -1,10 +1,17 @@
 import argparse
+import os
 import time
 import yaml
 
+import torch
+
+from yolov7_utils.experimental import attempt_load
+from yolov7_utils.torch_utils import select_device
+
 from nas.search_algorithm import EvolutionFinder
 from nas.supernet.supernet_yolov7 import YOLOSuperNet
-from predictors.efficiency_predictor import LatencyPredictor
+from nas.predictors.efficiency_predictor import LatencyPredictor
+from nas.predictors.accuracy_predictor import AccuracyCalculator
 
 def parse_args():
     parser = argparse.ArgumentParser("autonn_supernet_nas")
@@ -18,17 +25,47 @@ def parse_args():
     parser.add_argument("--constraint-type", default="flops", type=str, help="constraint type")
     parser.add_argument("--flops", default=600, type=float, help="flops")
     parser.add_argument("--efficiency-predictor", default=None, type=str, help="efficiency predictor")
+    # hyp parmas for accuracy predictor
     parser.add_argument("--accuracy-predictor", default=None, type=str, help="accuracy predictor")
-    args = parser.parse_args()
-    return args
+    parser.add_argument("--weights", default="yolov7_supernet_pt.pt", type=str, help="weights path")
+    parser.add_argument('--cfg', type=str, default='./yaml/yolov7_supernet.yml', help='model.yaml path')
+    parser.add_argument('--data', default='./yaml/data/coco128.yaml', type=str, help='data.yaml path')
+    parser.add_argument('--hyp', type=str, default='./yaml/data/hyp.scratch.p5.yaml', help='hyperparameters path')
+    parser.add_argument('--batch-size', type=int, default=16, help='total batch size for all GPUs')
+    parser.add_argument('--img-size', nargs='+', type=int, default=[640, 640], help='[train, test] image sizes')
+    parser.add_argument('--notest', action='store_true', help='only test final epoch')
+    parser.add_argument('--cache-images', action='store_true', help='cache images for faster training')
+    parser.add_argument('--device', default='0', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
+    parser.add_argument('--single-cls', action='store_true', help='train multi-class data as single-class')
+    parser.add_argument('--workers', type=int, default=0, help='maximum number of dataloader workers')
+    parser.add_argument('--v5-metric', action='store_true', help='assume maximum recall as 1.0 in AP calculation')
+    opt = parser.parse_args()
+    return opt
 
 
-def run_search(args):
+def run_search(opt):
     constraint_type, efficiency_constraint, accuracy_predictor = \
-        args.constraint_type, args.flops, args.accuracy_predictor
+        opt.constraint_type, opt.flops, opt.accuracy_predictor
     
     efficiency_predictor = LatencyPredictor(target="galaxy10")
     
+    device = select_device(opt.device)
+    
+    # Create model
+    # ckpt = torch.load(opt.weights, map_location=device)  # load checkpoint
+    state_dict = torch.load(opt.weights, map_location=device)  # load checkpoint
+    # supernet = attempt_load(opt.weights, map_location=device)
+    # state_dict = ckpt.float().state_dict() # FP32
+    supernet = YOLOSuperNet(cfg=opt.cfg).to(device)
+    supernet.load_state_dict(state_dict, strict=False)  # load
+    accuracy_predictor = AccuracyCalculator(opt, supernet)
+    
+    # for test
+    # ckpt = torch.load(opt.weights, map_location=device)  # load checkpoint
+    # model = attempt_load(opt.weights, map_location=device)
+    # model = ckpt['model'].float().to(device)  # FP32
+    # accuracy_predictor = AccuracyCalculator(opt, model)
+
     # build the evolution finder
     finder = EvolutionFinder(
         constraint_type=constraint_type, 
@@ -39,7 +76,7 @@ def run_search(args):
 
     # start searching
     result_list = []
-    for flops in [600, 400, 350]:
+    for flops in [600, 400]:
         st = time.time()
         finder.set_efficiency_constraint(flops)
         best_valids, best_info = finder.run_evolution_search()
@@ -50,17 +87,18 @@ def run_search(args):
     # save model into yaml
     for i, result in enumerate(result_list):
         best_depth = result[1]['d']
-        # Create model
-        supernet = YOLOSuperNet(cfg='./yaml/yolov7_supernet.yml')
+        # Active subet
         supernet.set_active_subnet(best_depth)
         sample_config = supernet.get_active_net_config()
         # Create yaml file
         yaml_file = './yaml/yolov7_searched_%d.yml' % i
+        if not os.path.exists(os.path.dirname(yaml_file)):
+            os.makedirs(os.path.dirname(yaml_file))
         with open(yaml_file, 'w') as f:
             yaml.dump(sample_config, f, sort_keys=False)
-        print(f'# Saved best {i} model config in {yaml_file}')
+        print(f'# Depth: {best_depth} | Saved best {i} model\'s config in {yaml_file}')
 
     
 if __name__ == "__main__":
-    args = parse_args()
-    run_search(args)
+    opt = parse_args()
+    run_search(opt)
