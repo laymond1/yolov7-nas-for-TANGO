@@ -47,9 +47,8 @@ class AccuracyCalculator():
     def predict_accuracy(self, subnet_list):
         acc_list = []
         # subnet_list: list of subnets
-        # for subnet in tqdm(subnet_list):
         for subnet in subnet_list:
-            # self.supernet.set_active_subnet(subnet)
+            self.supernet.set_active_subnet(subnet['d'])
             
             # Calculate mAP
             results, _, _ = test(self.opt.data,
@@ -68,8 +67,29 @@ class AccuracyCalculator():
             
             # mp, mr, map50, map, avg_loss = results
             map= results[3]
-            # print(len(results))
-            # print(results)
             acc_list.append(map)
 
         return acc_list
+    
+    def predict_accuracy_once(self, subnet):
+        # activate the subnet
+        self.supernet.set_active_subnet(subnet['d'])
+            
+        # Calculate mAP
+        results, _, _ = test(self.opt.data,
+                            batch_size=self.opt.batch_size * 2,
+                            imgsz=self.imgsz_test,
+                            conf_thres=0.001,
+                            iou_thres=0.7,
+                            model=self.supernet,
+                            single_cls=self.opt.single_cls,
+                            dataloader=self.testloader,
+                            # save_dir=save_dir,
+                            save_json=False,
+                            plots=False,
+                            is_coco=self.is_coco,
+                            v5_metric=self.opt.v5_metric)
+            
+        # mp, mr, map50, map, avg_loss = results
+        map = results[3]
+        return map
