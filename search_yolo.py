@@ -16,18 +16,18 @@ from nas.predictors.accuracy_predictor import AccuracyCalculator
 def parse_args():
     parser = argparse.ArgumentParser("autonn_supernet_nas")
     # hyp params for evolution search
-    parser.add_argument("--pop-size", default=100, type=int, help="population size")
+    parser.add_argument("--pop-size", default=10, type=int, help="population size")
     parser.add_argument("--num-generations", default=500, type=int, help="number of generations")
     parser.add_argument("--parent-ratio", default=0.25, type=float, help="parent ratio")
     parser.add_argument("--mutate-prob", default=0.1, type=float, help="mutate probability")
     parser.add_argument("--mutation-ratio", default=0.5, type=float, help="mutation ratio")
     # hyp params for search type
     parser.add_argument("--constraint-type", default="flops", type=str, help="constraint type")
-    parser.add_argument("--flops", default=600, type=float, help="flops")
+    parser.add_argument("--flops", default=400, type=float, help="flops")
     parser.add_argument("--efficiency-predictor", default=None, type=str, help="efficiency predictor")
     # hyp parmas for accuracy predictor
     parser.add_argument("--accuracy-predictor", default=None, type=str, help="accuracy predictor")
-    parser.add_argument("--weights", default="yolov7_supernet_pt.pt", type=str, help="weights path")
+    parser.add_argument("--weights", default="yolov7_supernet.pt", type=str, help="weights path")
     parser.add_argument('--cfg', type=str, default='./yaml/yolov7_supernet.yml', help='model.yaml path')
     parser.add_argument('--data', default='./yaml/data/coco128.yaml', type=str, help='data.yaml path')
     parser.add_argument('--hyp', type=str, default='./yaml/data/hyp.scratch.p5.yaml', help='hyperparameters path')
@@ -52,19 +52,8 @@ def run_search(opt):
     device = select_device(opt.device)
     
     # Create model
-    # ckpt = torch.load(opt.weights, map_location=device)  # load checkpoint
-    state_dict = torch.load(opt.weights, map_location=device)  # load checkpoint
-    # supernet = attempt_load(opt.weights, map_location=device)
-    # state_dict = ckpt.float().state_dict() # FP32
-    supernet = YOLOSuperNet(cfg=opt.cfg).to(device)
-    supernet.load_state_dict(state_dict, strict=False)  # load
+    supernet = attempt_load(opt.weights, map_location=device)
     accuracy_predictor = AccuracyCalculator(opt, supernet)
-    
-    # for test
-    # ckpt = torch.load(opt.weights, map_location=device)  # load checkpoint
-    # model = attempt_load(opt.weights, map_location=device)
-    # model = ckpt['model'].float().to(device)  # FP32
-    # accuracy_predictor = AccuracyCalculator(opt, model)
 
     # build the evolution finder
     finder = EvolutionFinder(
@@ -76,7 +65,7 @@ def run_search(opt):
 
     # start searching
     result_list = []
-    for flops in [600, 400]:
+    for flops in [400]:
         st = time.time()
         finder.set_efficiency_constraint(flops)
         best_valids, best_info = finder.run_evolution_search()

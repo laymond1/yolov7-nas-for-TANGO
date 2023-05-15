@@ -1,13 +1,13 @@
 import copy
 import random
-from tqdm import tqdm
+from tqdm import tqdm, trange
 import numpy as np
 
 
 class ArchManager:
     def __init__(self):
         self.num_blocks = [4, 4]
-        self.depths = [[3], [5]]
+        self.depths = [[1,2,3], [1,2,3,4,5]]
         # self.resolutions = [160, 176, 192, 208, 224]
 
     def random_sample(self):
@@ -65,8 +65,8 @@ class EvolutionFinder:
         self.num_blocks = self.arch_manager.num_blocks # [4, 4]
 
         self.mutate_prob = kwargs.get("mutate_prob", 0.1)
-        self.population_size = kwargs.get("population_size", 100)
-        self.max_time_budget = kwargs.get("max_time_budget", 500)
+        self.population_size = kwargs.get("population_size", 5)
+        self.max_time_budget = kwargs.get("max_time_budget", 5)
         self.parent_ratio = kwargs.get("parent_ratio", 0.25)
         self.mutation_ratio = kwargs.get("mutation_ratio", 0.5)
         
@@ -161,20 +161,12 @@ class EvolutionFinder:
         best_valids = [-100]
         population = []  # (validation, sample, latency) tuples
         child_pool = []
-        efficiency_pool = []
         best_info = None
-        if verbose:
-            print("Generate random population...")
-        for _ in range(population_size):
-            sample, efficiency = self.random_sample()
-            child_pool.append(sample)
-            efficiency_pool.append(efficiency)
 
-        accs = self.accuracy_predictor.predict_accuracy(child_pool)
-        # accs = [random.uniform(0.0, 1.0) for _ in range(len(child_pool))]
-        for i in range(population_size):
-            # population.append((accs[i].item(), child_pool[i], efficiency_pool[i]))
-            population.append((accs[i], child_pool[i], efficiency_pool[i]))
+        for _ in trange(population_size, desc="Generate random population..."):
+            sample, efficiency = self.random_sample()
+            acc = self.accuracy_predictor.predict_accuracy_once(sample)
+            population.append((acc, sample, efficiency))
 
         if verbose:
             print("Start Evolution...")
@@ -214,10 +206,8 @@ class EvolutionFinder:
                 child_pool.append(new_sample)
                 efficiency_pool.append(efficiency)
 
-            accs = self.accuracy_predictor.predict_accuracy(child_pool)
-            # accs = [random.uniform(0.0, 1.0) for _ in range(len(child_pool))]
-            for i in range(population_size):
-                # population.append((accs[i].item(), child_pool[i], efficiency_pool[i]))
-                population.append((accs[i], child_pool[i], efficiency_pool[i]))
+            for i in trange(population_size, desc="Mutate and Crossover..."):
+                acc = self.accuracy_predictor.predict_accuracy_once(child_pool[i])                
+                population.append((acc, child_pool[i], efficiency_pool[i]))
 
         return best_valids, best_info
