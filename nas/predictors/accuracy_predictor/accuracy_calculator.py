@@ -5,6 +5,7 @@ Accuracy predictor will be added to increase the search efficiency.
 
 import os
 import yaml
+from finetune import finetune
 from test import test  # import test.py to get mAP for each subnet
 from tqdm import tqdm
 
@@ -43,6 +44,16 @@ class AccuracyCalculator():
                                        hyp=hyp, cache=opt.cache_images and not opt.notest, rect=True, rank=-1,
                                        world_size=opt.world_size, workers=opt.workers,
                                        pad=0.5, prefix=colorstr('val: '))[0]
+        
+    # TODO : add finetune function
+    def finetune_subnet(self, subnet):
+        # activate the subnet
+        self.supernet.set_active_subnet(subnet['d'])
+        
+        # finetune the subnet
+        # train(hyp.copy(), opt, device)
+        raise NotImplementedError
+        
 
     def predict_accuracy(self, subnet_list):
         acc_list = []
@@ -93,3 +104,5 @@ class AccuracyCalculator():
         # mp, mr, map50, map, avg_loss = results
         map = results[3]
         return map
+    
+    
