@@ -71,7 +71,7 @@ def test(data,
     model.eval()
     if isinstance(data, str):
         is_coco = data.endswith('coco.yaml')
-        with open(data) as f:
+        with open(data, encoding='UTF-8') as f:
             data = yaml.load(f, Loader=yaml.SafeLoader)
     check_dataset(data)  # check
     nc = 1 if single_cls else int(data['nc'])  # number of classes
@@ -102,6 +102,7 @@ def test(data,
     loss = torch.zeros(3, device=device)
     jdict, stats, ap, ap_class, wandb_images = [], [], [], [], []
     for batch_i, (img, targets, paths, shapes) in enumerate(tqdm(dataloader, desc=s)):
+    # for batch_i, (img, targets, paths, shapes) in enumerate(dataloader):
         img = img.to(device, non_blocking=True)
         img = img.half() if half else img.float()  # uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
@@ -289,8 +290,8 @@ def test(data,
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='test.py')
-    parser.add_argument('--weights', nargs='+', type=str, default='yolov7.pt', help='model.pt path(s)')
-    parser.add_argument('--data', type=str, default='data/coco.yaml', help='*.data path')
+    parser.add_argument('--weights', nargs='+', type=str, default='yolov7_supernet.pt', help='model.pt path(s)')
+    parser.add_argument('--data', type=str, default='yaml/data/coco128.yaml', help='*.data path')
     parser.add_argument('--batch-size', type=int, default=32, help='size of each image batch')
     parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
     parser.add_argument('--conf-thres', type=float, default=0.001, help='object confidence threshold')
@@ -312,6 +313,7 @@ if __name__ == '__main__':
     opt = parser.parse_args()
     opt.save_json |= opt.data.endswith('coco.yaml')
     opt.data = check_file(opt.data)  # check file
+    opt.no_trace = True
     print(opt)
     #check_requirements()
 

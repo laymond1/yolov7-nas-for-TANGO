@@ -33,8 +33,8 @@ class ELANBlock(nn.Module):
                 outputs.append(x)
                 
         if d is not None:
-            return torch.cat([outputs[i] for i in self.act_idx[:d+1]], dim=1)
-        return torch.cat([outputs[i] for i in self.act_idx], dim=1)
+            return torch.cat([outputs[i] for i in self.act_idx[:d+1][::-1]], dim=1)
+        return torch.cat([outputs[i] for i in self.act_idx[::-1]], dim=1)
 
 
 # ELANBlock for Backbone
@@ -69,8 +69,8 @@ class BBoneELAN(ELAN):
                 outputs.append(x)
                 
         if d is not None:
-            return torch.cat([outputs[i] for i in self.act_idx[:d+1]], dim=1)
-        return torch.cat([outputs[i] for i in self.act_idx], dim=1)
+            return torch.cat([outputs[i] for i in self.act_idx[:d+1][::-1]], dim=1)
+        return torch.cat([outputs[i] for i in self.act_idx[::-1]], dim=1)
 
 
     def get_active_net(self):
@@ -112,8 +112,8 @@ class HeadELAN(ELAN):
                 outputs.append(x)
                 
         if d is not None:
-            return torch.cat([outputs[i] for i in self.act_idx[:d+1]], dim=1)
-        return torch.cat([outputs[i] for i in self.act_idx], dim=1)
+            return torch.cat([outputs[i] for i in self.act_idx[:d+1][::-1]], dim=1)
+        return torch.cat([outputs[i] for i in self.act_idx[::-1]], dim=1)
     
     
     def get_active_net(self):

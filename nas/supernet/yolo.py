@@ -522,9 +522,8 @@ class IBin(nn.Module):
         yv, xv = torch.meshgrid([torch.arange(ny), torch.arange(nx)])
         return torch.stack((xv, yv), 2).view((1, 1, ny, nx, 2)).float()
 
-# TODO OFA의 MyNetwork를 상속받아 YOLOModel 정의
-# class Model(nn.Module):
-class YOLOModel(MyNetwork):
+
+class YOLOModel(nn.Module):
     def __init__(self, cfg='yolor-csp-c.yaml', ch=3, nc=None, anchors=None):  # model, input channels, number of classes
         super(YOLOModel, self).__init__()
         self.traced = False
