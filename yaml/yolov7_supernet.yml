@@ -29,7 +29,7 @@ backbone:
    [-1, 1, Conv, [64, 3, 1]],
    
    [-1, 1, Conv, [128, 3, 2]],  # 3-P2/4  
-   [-1, 1, BBoneELAN, [64, 3, 3]], #  args: [c1, k, depth]
+   [-1, 1, BBoneELAN, [64, 3, 3]], #  args: [c1, k, depth], depth is max value of the depth_list each index
    [-1, 1, DyConv, [256, 1, 1]],  # 5
          
    [-1, 1, MP, []],
@@ -99,5 +99,5 @@ head:
    [46, 1, RepConv, [512, 3, 1]],
    [53, 1, RepConv, [1024, 3, 1]],
 
-   [[54,55,56], 1, IDetect, [nc, anchors]],   # Detect(P3, P4, P5)
+   [[54,55,56], 1, Detect, [nc, anchors]],   # Detect(P3, P4, P5)
   ]
