@@ -206,7 +206,7 @@ class EvolutionFinder:
                 child_pool.append(new_sample)
                 efficiency_pool.append(efficiency)
 
-            for i in trange(population_size, desc="Mutate and Crossover..."):
+            for i in trange(population_size, desc=f"[{iter+1}|{max_time_budget}] Mutate and Crossover..."):
                 acc = self.accuracy_predictor.predict_accuracy_once(child_pool[i])                
                 population.append((acc, child_pool[i], efficiency_pool[i]))
 
