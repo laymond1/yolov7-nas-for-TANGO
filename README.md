@@ -16,7 +16,7 @@
 - [X] ELAN Block 정의
 - [X] YOLO SuperNet 정의
 - [X] Evolution Search 구현 (실행 파일: search_yolo.py)
-- [ ] 모바일 NAS 코드 통합
+- [X] 모바일 NAS 코드 통합
 - [ ] TANGO Repo 양식으로 변환 및 통합
 - [ ] 코드 정제 
   - [ ] 각 코드 파일 별 불필요한 라이브러리 로드 제거
