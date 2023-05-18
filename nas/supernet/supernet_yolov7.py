@@ -81,7 +81,6 @@ class YOLOSuperNet(YOLOModel):
         self.set_max_net()
 
     def forward_once(self, x, profile=False):
-        assert isinstance(self.runtime_depth, list)
         y, dt = [], []  # outputs
         elan_idx = 0
         for m in self.model:
