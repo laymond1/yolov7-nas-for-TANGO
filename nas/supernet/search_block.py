@@ -6,11 +6,12 @@ from nas.supernet.dynamic_layers.dynamic_op import DynamicConv2d, DynamicBatchNo
 
 
 class ELAN(nn.Module):
-    def __init__(self, c1, c2, k, depth):
+    def __init__(self, c1, c2, k, depth): #act):
         super(ELAN, self).__init__()
         assert c1 % 2 == 0
         self.c2 = c2
         self.depth = depth
+        #self.act = act
 
 class ELANBlock(nn.Module):
     def __init__(self, mode, layers, depth):
@@ -36,19 +37,22 @@ class ELANBlock(nn.Module):
             return torch.cat([outputs[i] for i in self.act_idx[:d+1][::-1]], dim=1)
         return torch.cat([outputs[i] for i in self.act_idx[::-1]], dim=1)
 
+#==============================================================
+#========================= YOLOv7 =============================
+#==============================================================
 
 # ELANBlock for Backbone
 class BBoneELAN(ELAN):
     mode = 'BBone'
-    def __init__(self, c1, c2, k, depth):
-        super(BBoneELAN, self).__init__(c1, c2, k, depth)
+    def __init__(self, c1, c2, k, depth): #, act):
+        super(BBoneELAN, self).__init__(c1, c2, k, depth) #, act)
         assert c1 % 2 == 0
         
         layers = []
         # make layers according to depth
         for i in range(depth):
             if i == 0: # depth 1
-                layers.append(Conv(c1, c2, 1, 1))
+                layers.append(Conv(c1, c2, 1, 1)) #, act=act))
                 layers.append(Conv(c1, c2, 1, 1))
             else: # depth 2 ~
                 layers.append(Conv(c2, c2, k, 1))
@@ -81,8 +85,8 @@ class BBoneELAN(ELAN):
 # there are differences about cardinality(path) and channel size
 class HeadELAN(ELAN):
     mode = 'Head'
-    def __init__(self, c1, c2, k, depth):
-        super(HeadELAN, self).__init__(c1, c2, k, depth)
+    def __init__(self, c1, c2, k, depth): #, act):
+        super(HeadELAN, self).__init__(c1, c2, k, depth) #, act)
         assert c1 % 2 == 0 and c2 % 2 == 0
         c_ = int(c2 / 2)
         
@@ -90,7 +94,7 @@ class HeadELAN(ELAN):
         # make layers according to depth
         for i in range(depth):
             if i == 0: # depth 1
-                layers.append(Conv(c1, c2, 1, 1))
+                layers.append(Conv(c1, c2, 1, 1)) #, act=act))
                 layers.append(Conv(c1, c2, 1, 1))
             elif i == 1: # depth 2
                 layers.append(Conv(c2, c_, k, 1))
@@ -134,3 +138,51 @@ class DyConv(nn.Module):
 
     def fuseforward(self, x):
         return self.act(self.conv(x))
+
+#==============================================================
+#======================= YOLOv7-tiny ==========================
+#==============================================================
+
+class ELAN2(nn.Module):
+    def __init__(self, c1, c2, k, depth, act):
+        super(ELAN2, self).__init__()
+        assert c1 % 2 == 0
+        self.c2 = c2
+        self.depth = depth
+        self.act = act
+
+# backbone ELAN and head ELAN are the same in tiny version 
+class TinyELAN(ELAN2):
+    mode = 'TinyELAN'
+    def __init__(self, c1, c2, k, depth, act): # activation default : SILU() / inputs could be : nn.ReLU(), nn.LeakyReLU() ...
+        super(TinyELAN, self).__init__(c1, c2, k, depth, act)
+        assert c1 % 2 == 0
+
+        layers = []
+        # make layers according to depth
+        for i in range(depth*2):
+            if i in [0, 1]: # depth 1
+                layers.append(Conv(c1, c2, 1, 1, act=act)) # Conv need activation
+            else: # depth 2 ~
+                layers.append(Conv(c2, c2, k, 1, act=act))
+        # make layers sequential like yolo
+        self.layers = nn.Sequential(*layers)
+        # active index is used for forward
+        self.act_idx = [idx for idx in range(depth)]
+
+
+    def forward(self, x, d=None):
+        outputs = []
+        for i, m in enumerate(self.layers):
+            if i == 0: # left output in depth 1
+                outputs.append(m(x))
+            else: # right outputs in depth 1 ~
+                x = m(x)
+                outputs.append(x)
+                
+        if d is not None:
+            return torch.cat([outputs[i] for i in self.act_idx[:d+1][::-1]], dim=1)
+        return torch.cat([outputs[i] for i in self.act_idx[::-1]], dim=1)
+    
+    def get_active_net(self):
+        raise NotImplementedError
