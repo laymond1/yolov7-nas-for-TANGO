@@ -25,20 +25,11 @@ class skin_backbone(nn.Module):
 class skin_head(nn.Module):
     def __init__(self, arch, save):
         super(skin_head, self).__init__()
-        self.model = arch
+        self.model = arch[:-1]
         self.save = save
         self.y = [None for _ in range(27)]
         self.y[12] = torch.rand(1, 512, 80, 80)
-        # self.y[12].requires_grad = False
         self.y[19] = torch.rand(1, 1024, 40, 40)
-        # self.y[19].requires_grad = False
-        m = self.model[-1]  # Detect()
-        m.stride = torch.tensor(
-            [20 / x.shape[-2] for x in self.forward(torch.zeros(1, 1024, 20, 20))],
-            requires_grad=False,
-        )  # forward
-        m.anchors /= m.stride.view(-1, 1, 1)
-        self.model.stride = m.stride
 
     def forward(self, x):
         device = x.get_device()
@@ -52,7 +43,7 @@ class skin_head(nn.Module):
                     self.y[m.f].to(device)
                     if isinstance(m.f, int)
                     else [x if j == -1 else self.y[j] for j in m.f]
-                )  # from earlier laself.yers
+                )  # from earlier layers
             x = m(x)  # run
             self.y.append(x.detach() if m.i in self.save else None)
         return x
