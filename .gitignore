@@ -132,3 +132,15 @@ dmypy.json
 # dataset
 Data
 images/
+
+# VSCode settings
+.vscode
+
+# Exported tflite models
+exported_models/
+
+# MacOS temp file
+.DS_Store
+
+# onnx-tf repository
+onnx-tensorflow/
