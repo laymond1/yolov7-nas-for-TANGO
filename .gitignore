@@ -132,3 +132,16 @@ dmypy.json
 # dataset
 Data
 images/
+coco128/
+
+# 
+.vscode/
+runs/
+wandb/
+
+models/
+# *.pt
+*.zip
+
+detect.py
+export.py
