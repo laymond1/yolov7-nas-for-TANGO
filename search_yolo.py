@@ -28,9 +28,9 @@ def parse_args():
     # hyp parmas for accuracy predictor
     parser.add_argument("--accuracy-predictor", default=None, type=str, help="accuracy predictor")
     parser.add_argument("--weights", default="yolov7_supernet.pt", type=str, help="weights path")
-    parser.add_argument('--cfg', type=str, default='./yaml/yolov7_supernet.yml', help='model.yaml path')
-    parser.add_argument('--data', default='./yaml/data/coco128.yaml', type=str, help='data.yaml path')
-    parser.add_argument('--hyp', type=str, default='./yaml/data/hyp.scratch.p5.yaml', help='hyperparameters path')
+    parser.add_argument('--cfg', type=str, default='./yaml_config/yolov7_supernet.yml', help='model.yaml path')
+    parser.add_argument('--data', default='./yaml_config/data/coco128.yaml', type=str, help='data.yaml path')
+    parser.add_argument('--hyp', type=str, default='./yaml_config/data/hyp.scratch.p5.yaml', help='hyperparameters path')
     parser.add_argument('--save-dir', type=str, default='runs/finetune', help='directory to save results')
     parser.add_argument('--fintune_epochs', type=int, default=5, help='number of finetuning epochs')
     parser.add_argument('--batch-size', type=int, default=16, help='total batch size for all GPUs')

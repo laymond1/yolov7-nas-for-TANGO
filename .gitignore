@@ -130,7 +130,6 @@ dmypy.json
 .pyre/
 
 # dataset
-Data
 images/
 coco128/
 
