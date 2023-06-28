@@ -133,6 +133,7 @@ dmypy.json
 Data
 images/
 coco128/
+coco/
 
 # 
 .vscode/
@@ -140,7 +141,7 @@ runs/
 wandb/
 
 models/
-# *.pt
+*.pt
 *.zip
 
 detect.py

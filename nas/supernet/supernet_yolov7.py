@@ -51,7 +51,7 @@ class YOLOSuperNet(YOLOModel):
     -----------
     model: nn.Sequential
         a sequence of nn.modules, i.e. YOLOSuperNet modules 
-    save: list
+    save: list  
         indice of jumping points to use for forward pass
     depth_list: list of int
         list of depth for each ELANBlock

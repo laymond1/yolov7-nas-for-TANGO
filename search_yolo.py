@@ -23,13 +23,13 @@ def parse_args():
     parser.add_argument("--mutation-ratio", default=0.5, type=float, help="mutation ratio")
     # hyp params for search type
     parser.add_argument("--constraint-type", default="flops", type=str, help="constraint type")
-    parser.add_argument("--flops", default=400, type=float, help="flops")
+    parser.add_argument("--flops", default=600, type=float, help="flops")
     parser.add_argument("--efficiency-predictor", default=None, type=str, help="efficiency predictor")
     # hyp parmas for accuracy predictor
     parser.add_argument("--accuracy-predictor", default=None, type=str, help="accuracy predictor")
-    parser.add_argument("--weights", default="yolov7_supernet.pt", type=str, help="weights path")
+    parser.add_argument("--weights", default="yolov7_supernetv2.pt", type=str, help="weights path")
     parser.add_argument('--cfg', type=str, default='./yaml/yolov7_supernet.yml', help='model.yaml path')
-    parser.add_argument('--data', default='./yaml/data/coco128.yaml', type=str, help='data.yaml path')
+    parser.add_argument('--data', default='./yaml/data/coco.yaml', type=str, help='data.yaml path')
     parser.add_argument('--hyp', type=str, default='./yaml/data/hyp.scratch.p5.yaml', help='hyperparameters path')
     parser.add_argument('--save-dir', type=str, default='runs/finetune', help='directory to save results')
     parser.add_argument('--fintune_epochs', type=int, default=5, help='number of finetuning epochs')
@@ -79,27 +79,31 @@ def run_search(opt):
 
     # start searching
     result_list = []
-    for flops in [400]:
+    for flops in [opt.flops]:
         st = time.time()
         finder.set_efficiency_constraint(flops)
         best_valids, best_info = finder.run_evolution_search()
+        print('-----------------------------------------------')
+        print(best_info)
+        print('-----------------------------------------------')
         ed = time.time()
         # print('Found best architecture at flops <= %.2f M in %.2f seconds! It achieves %.2f%s predicted accuracy with %.2f MFLOPs.' % (flops, ed-st, best_info[0] * 100, '%', best_info[-1]))
         result_list.append(best_info)
         
-    # save model into yaml
-    for i, result in enumerate(result_list):
-        best_depth = result[1]['d']
-        # Active subet
-        supernet.set_active_subnet(best_depth)
-        sample_config = supernet.get_active_net_config()
-        # Create yaml file
-        yaml_file = './yaml/yolov7_searched_%d.yml' % i
-        if not os.path.exists(os.path.dirname(yaml_file)):
-            os.makedirs(os.path.dirname(yaml_file))
-        with open(yaml_file, 'w') as f:
-            yaml.dump(sample_config, f, sort_keys=False)
-        print(f'# Depth: {best_depth} | Saved best {i} model\'s config in {yaml_file}')
+    # # save model into yaml
+    # print('save model into yaml')
+    # for i, result in enumerate(result_list):
+    #     best_depth = result[1]['d']
+    #     # Active subet
+    #     supernet.set_active_subnet(best_depth)
+    #     sample_config = supernet.get_active_net_config()
+    #     # Create yaml file
+    #     yaml_file = './yaml/yolov7_searched_%d.yml' % i
+    #     if not os.path.exists(os.path.dirname(yaml_file)):
+    #         os.makedirs(os.path.dirname(yaml_file))
+    #     with open(yaml_file, 'w') as f:
+    #         yaml.dump(sample_config, f, sort_keys=False)
+    #     print(f'# Depth: {best_depth} | Saved best {i} model\'s config in {yaml_file}')
 
     
 if __name__ == "__main__":
