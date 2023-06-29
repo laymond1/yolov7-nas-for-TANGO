@@ -134,3 +134,66 @@ class DyConv(nn.Module):
 
     def fuseforward(self, x):
         return self.act(self.conv(x))
+    
+#==============================================================
+#======================= YOLOv7-tiny ==========================
+#==============================================================
+
+class ELAN2(nn.Module):
+    def __init__(self, c1, c2, k, depth, act):
+        super(ELAN2, self).__init__()
+        assert c1 % 2 == 0
+        self.c2 = c2
+        self.depth = depth
+        self.act = act
+
+# backbone ELAN and head ELAN are the same in tiny version 
+class TinyELAN(ELAN2):
+    mode = 'TinyELAN'
+    def __init__(self, c1, c2, k, depth, act): # activation default : SILU() / inputs could be : nn.ReLU(), nn.LeakyReLU() ...
+        super(TinyELAN, self).__init__(c1, c2, k, depth, act)
+        assert c1 % 2 == 0
+
+        layers = []
+        # make layers according to depth
+        for i in range(depth*2):
+            if i in [0, 1]: # depth 1
+                layers.append(Conv(c1, c2, 1, 1, act=act)) # Conv need activation
+            else: # depth 2 ~
+                layers.append(Conv(c2, c2, k, 1, act=act))
+        # make layers sequential like yolo
+        self.layers = nn.Sequential(*layers)
+        # active index is used for forward
+        self.act_idx = [idx for idx in range(depth*2)]
+
+
+    def forward(self, x, d=None):
+        outputs = []
+        for i, m in enumerate(self.layers):
+            if i == 0: # left output in depth 1
+                outputs.append(m(x))
+            else: # right outputs in depth 1 ~
+                x = m(x)
+                outputs.append(x)
+                
+        if d is not None:
+            return torch.cat([outputs[i] for i in self.act_idx[:d+1][::-1]], dim=1)
+        return torch.cat([outputs[i] for i in self.act_idx[::-1]], dim=1)
+    
+    def get_active_net(self):
+        raise NotImplementedError
+    
+# Dynamic Convolution for elastic channel size
+class TinyDyConv(nn.Module):
+    # Dynamic Convolution for elastic channel size
+    def __init__(self, c1, c2, k=1, s=1, act=True):  # ch_in, ch_out, kernel, stride
+        super(TinyDyConv, self).__init__()
+        self.conv = DynamicConv2d(c1, c2, k, s) # auto same padding
+        self.bn = DynamicBatchNorm2d(c2)
+        self.act = nn.SiLU() if act is True else (act if isinstance(act, nn.Module) else nn.Identity())
+
+    def forward(self, x):
+        return self.act(self.bn(self.conv(x)))
+
+    def fuseforward(self, x):
+        return self.act(self.conv(x))

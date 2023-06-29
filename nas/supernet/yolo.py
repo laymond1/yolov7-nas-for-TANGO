@@ -42,7 +42,7 @@ from ofa_utils.layers import (
 from ofa_utils import MyNetwork, make_divisible, MyGlobalAvgPool2d
 
 ## search_block.py
-from .search_block import BBoneELAN, HeadELAN, DyConv
+from .search_block import BBoneELAN, HeadELAN, DyConv, TinyELAN, TinyDyConv
 
 
 class Detect(nn.Module):
@@ -1105,6 +1105,14 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
         elif m is HeadELAN:
             c1, c2 = ch[f], int((args[0] * 2) + (args[0] / 2 * (args[-1] - 1)))
             args = [c1, *args]
+        elif m is TinyELAN: # TinyELAN
+            c1, c2 = ch[f], args[0]
+            args = [c1, c2, *args[1:]]
+        elif m is TinyDyConv:
+            c1, c2 = args[0], int(args[0]//2)
+            if c2 != no:  # if not output
+                c2 = make_divisible(c2 * gw, 8)
+            args = [c1, c2, *args[1:]]
         elif m is nn.BatchNorm2d:
             args = [ch[f]]
         elif m is Concat:
