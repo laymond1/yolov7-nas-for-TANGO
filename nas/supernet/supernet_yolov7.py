@@ -178,6 +178,7 @@ class YOLOSuperNet(YOLOModel):
             model = deepcopy(self.model)
             for i, m in enumerate(model):
                 if isinstance(m, ELAN):
+                    print(m.act_idx)
                     depth = self.runtime_depth[elan_idx]
                     act_idx = m.act_idx[depth]
                     model[i] = ELANBlock(
