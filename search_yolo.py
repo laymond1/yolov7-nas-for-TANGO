@@ -22,8 +22,8 @@ def parse_args():
     parser.add_argument("--mutate-prob", default=0.1, type=float, help="mutate probability")
     parser.add_argument("--mutation-ratio", default=0.5, type=float, help="mutation ratio")
     # hyp params for search type
-    parser.add_argument("--constraint-type", default="flops", type=str, help="constraint type")
-    parser.add_argument("--flops", default=400, type=float, help="flops")
+    parser.add_argument("--constraint-type", default="galaxy10", type=str, help="constraint type")
+    parser.add_argument("--efficiency_constraint", default=3000, type=float, help="flops")
     parser.add_argument("--efficiency-predictor", default=None, type=str, help="efficiency predictor")
     # hyp parmas for accuracy predictor
     parser.add_argument("--accuracy-predictor", default=None, type=str, help="accuracy predictor")
@@ -57,7 +57,7 @@ def parse_args():
 
 def run_search(opt):
     constraint_type, efficiency_constraint, accuracy_predictor = \
-        opt.constraint_type, opt.flops, opt.accuracy_predictor
+        opt.constraint_type, opt.efficiency_constraint, opt.accuracy_predictor
     
     efficiency_predictor = LatencyPredictor(target="galaxy10")
     
@@ -79,7 +79,7 @@ def run_search(opt):
 
     # start searching
     result_list = []
-    for flops in [400]:
+    for flops in [efficiency_constraint]:
         st = time.time()
         finder.set_efficiency_constraint(flops)
         best_valids, best_info = finder.run_evolution_search()
