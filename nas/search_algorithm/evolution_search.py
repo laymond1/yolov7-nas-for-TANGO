@@ -38,7 +38,7 @@ class ArchManager:
 class EvolutionFinder:
 
     valid_constraint_range = {
-        "flops": [150, 600],
+        "galaxy10": [150, 5000],
         "note10": [15, 60],
     }
     def __init__(
