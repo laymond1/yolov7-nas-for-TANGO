@@ -81,6 +81,7 @@ class YOLOSuperNet(YOLOModel):
         self.set_max_net()
 
     def forward_once(self, x, profile=False):
+        # assert isinstance(self.runtime_depth, list)
         y, dt = [], []  # outputs
         elan_idx = 0
         for m in self.model:
@@ -178,7 +179,6 @@ class YOLOSuperNet(YOLOModel):
             model = deepcopy(self.model)
             for i, m in enumerate(model):
                 if isinstance(m, ELAN):
-                    print(m.act_idx)
                     depth = self.runtime_depth[elan_idx]
                     act_idx = m.act_idx[depth]
                     model[i] = ELANBlock(
