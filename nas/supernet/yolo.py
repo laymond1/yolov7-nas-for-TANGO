@@ -535,6 +535,12 @@ class YOLOModel(nn.Module):
             with open(cfg) as f:
                 self.yaml = yaml.load(f, Loader=yaml.SafeLoader)  # model dict
 
+        # Define depth list
+        self.depth_list = self.yaml['depth_list']
+        max_list = lambda x: [max(n) for n in x]
+        d = max_list(self.depth_list)
+        self.runtime_depth = d
+
         # Define model
         ch = self.yaml['ch'] = self.yaml.get('ch', ch)  # input channels
         if nc and nc != self.yaml['nc']:
