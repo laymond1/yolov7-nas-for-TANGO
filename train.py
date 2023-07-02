@@ -41,6 +41,16 @@ from nas.supernet.supernet_yolov7 import YOLOSuperNet
 logger = logging.getLogger(__name__)
 
 
+# progressiv shrink
+from nas.search_algorithm.distributed_run_manager import DistributedRunManager
+from ofa_utils import (
+    cross_entropy_with_label_smoothing,
+    cross_entropy_loss_with_soft_target,
+    write_log,
+    init_models,
+)
+
+
 def train(hyp, opt, device, tb_writer=None):
     logger.info(colorstr('hyperparameters: ') + ', '.join(f'{k}={v}' for k, v in hyp.items()))
     save_dir, epochs, batch_size, total_batch_size, weights, rank, freeze = \
@@ -309,6 +319,8 @@ def train(hyp, opt, device, tb_writer=None):
                 f'Logging results to {save_dir}\n'
                 f'Starting training for {epochs} epochs...')
     torch.save(model, wdir / 'init.pt')
+
+    # for epoch in range()
     for epoch in range(start_epoch, epochs):  # epoch ------------------------------------------------------------------
         model.train()
 
@@ -361,20 +373,59 @@ def train(hyp, opt, device, tb_writer=None):
                     ns = [math.ceil(x * sf / gs) * gs for x in imgs.shape[2:]]  # new shape (stretched to gs-multiple)
                     imgs = F.interpolate(imgs, size=ns, mode='bilinear', align_corners=False)
 
-            # Forward
-            with amp.autocast(enabled=cuda):
-                pred = model(imgs)  # forward
-                if 'loss_ota' not in hyp or hyp['loss_ota'] == 1:
-                    loss, loss_items = compute_loss_ota(pred, targets.to(device), imgs)  # loss scaled by batch_size
-                else:
-                    loss, loss_items = compute_loss(pred, targets.to(device))  # loss scaled by batch_size
-                if rank != -1:
-                    loss *= opt.world_size  # gradient averaged between devices in DDP mode
-                if opt.quad:
-                    loss *= 4.
+            # progressive
 
-            # Backward
-            scaler.scale(loss).backward()
+            # soft target
+            if opt.kd_ratio > 0:
+                opt.teacher_model.train()
+                with torch.no_grad():
+                    soft_logits = opt.teacher_model(imgs).detach()
+                    soft_label = F.softmax(soft_logits, dim=1)
+
+            # train one epoch()
+            loss_items = []
+            for _ in range(opt.dynamic_batch_size):
+                # set random seed before sampling
+                subnet_seed = int("%d%.3d%.3d" % (epoch * nb + i, _, 0))
+                random.seed(subnet_seed)
+                subnet_settings = model.sample_active_subnet()
+
+                output = model(imgs)
+
+                #loss_items = []
+                if opt.kd_ratio == 0:
+                    loss = nn.CrossEntropyLoss(output, labels)
+                    #loss_type = "ce"
+                else:
+                    if opt.kd_type == "ce":
+                        kd_loss = cross_entropy_loss_with_soft_target(
+                            output, soft_label
+                        )
+                    else:
+                        kd_loss = F.mse_loss(output, soft_logits)
+                    loss = opt.kd_ratio * kd_loss + nn.CrossEntropyLoss(
+                        output, labels
+                    )
+                    #loss_type = "%.1fkd-%s & ce" % (opt.kd_ratio, opt.kd_type)
+
+                    # measure accuracy and record loss
+                    loss_items.append(loss)
+                    #run_manager.update_metric(metric_dict, output, target)
+
+                loss.backward()
+            scaler.scale(loss).backward() #optimizer.step()
+
+            # Forward (기존)
+            #    with amp.autocast(enabled=cuda):
+            #        pred = model(imgs)  # forward
+            #        if 'loss_ota' not in hyp or hyp['loss_ota'] == 1:
+            #            loss, loss_items = compute_loss_ota(pred, targets.to(device), imgs)  # loss scaled by batch_size
+            #        else:
+            #            loss, loss_items = compute_loss(pred, targets.to(device))  # loss scaled by batch_size
+            #        if rank != -1:
+            #            loss *= opt.world_size  # gradient averaged between devices in DDP mode
+            #        if opt.quad:
+            #            loss *= 4.
 
             # Optimize
             if ni % accumulate == 0:
@@ -567,6 +618,7 @@ if __name__ == '__main__':
     parser.add_argument('--artifact_alias', type=str, default="latest", help='version of dataset artifact to be used')
     parser.add_argument('--freeze', nargs='+', type=int, default=[0], help='Freeze layers: backbone of yolov7=50, first3=0 1 2')
     parser.add_argument('--v5-metric', action='store_true', help='assume maximum recall as 1.0 in AP calculation')
+    parser.add_argument('--dynamic_batch_size', type=int, default=2, help='dynamic_batch')
     opt = parser.parse_args()
 
     # Set DDP variables
