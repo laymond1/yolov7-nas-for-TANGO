@@ -65,10 +65,16 @@ class YOLOSuperNet(YOLOModel):
         nc=None, 
         anchors=None,
         ):
+
+        self.runtime_depth = 0
+
         super(YOLOSuperNet, self).__init__(cfg, ch, nc, anchors)
-        
+
+        self.depth_list = self.yaml['depth_list']
+        self.set_max_net()
+
     def forward_once(self, x, profile=False):
-        assert isinstance(self.runtime_depth, list)
+        # assert isinstance(self.runtime_depth, list)
         y, dt = [], []  # outputs
         elan_idx = 0
         for m in self.model:

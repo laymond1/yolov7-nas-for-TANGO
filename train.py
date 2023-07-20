@@ -251,9 +251,11 @@ def train(hyp, opt, device, tb_writer=None):
                                             hyp=hyp, augment=True, cache=opt.cache_images, rect=opt.rect, rank=rank,
                                             world_size=opt.world_size, workers=opt.workers,
                                             image_weights=opt.image_weights, quad=opt.quad, prefix=colorstr('train: '))
+    
     mlc = np.concatenate(dataset.labels, 0)[:, 0].max()  # max label class
     nb = len(dataloader)  # number of batches
     assert mlc < nc, 'Label class %g exceeds nc=%g in %s. Possible class labels are 0-%g' % (mlc, nc, opt.data, nc - 1)
+
 
     # Process 0
     if rank in [-1, 0]:
@@ -365,7 +367,8 @@ def train(hyp, opt, device, tb_writer=None):
             for _ in range(opt.dynamic_batch_size):
                 subnet_seed = int("%d%.3d%.3d" % (epoch * nb + i, _, 0))
                 random.seed(subnet_seed)
-                subnet_settings = model.sample_active_subnet()
+                # subnet_settings = model.sample_active_subnet()
+                subnet_settings = model.module.sample_active_subnet()
 
                 # Forward
                 with amp.autocast(enabled=cuda):
@@ -539,7 +542,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', type=str, default='', help='initial weights path')
     parser.add_argument('--cfg', type=str, default='./yaml/yolov7_supernet.yml', help='model.yaml path')
-    parser.add_argument('--data', type=str, default='data/coco128.yaml', help='data.yaml path')
+    #parser.add_argument('--data', type=str, default='data/coco128.yaml', help='data.yaml path') #coco128
+    parser.add_argument('--data', type=str, default='./yaml/data/coco.yaml', help='data.yaml path') #coco
     parser.add_argument('--hyp', type=str, default='data/hyp.scratch.p5.yaml', help='hyperparameters path')
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--batch-size', type=int, default=16, help='total batch size for all GPUs')
@@ -560,7 +564,8 @@ if __name__ == '__main__':
     parser.add_argument('--sync-bn', action='store_true', help='use SyncBatchNorm, only available in DDP mode')
     parser.add_argument('--local_rank', type=int, default=-1, help='DDP parameter, do not modify')
     parser.add_argument('--workers', type=int, default=0, help='maximum number of dataloader workers')
-    parser.add_argument('--project', default='runs/train', help='save to project/name')
+    #parser.add_argument('--project', default='runs/train', help='save to project/name') #coco128
+    parser.add_argument('--project', default='runs/train_coco', help='save to project/name') #coco
     parser.add_argument('--entity', default=None, help='W&B entity')
     parser.add_argument('--name', default='exp', help='save to project/name')
     parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
