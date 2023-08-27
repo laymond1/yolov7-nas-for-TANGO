@@ -52,9 +52,12 @@ y = torch.as_tensor(y)
 dataset = TensorDataset(x, y)
 
 # performance test
-#train_set, val_set = torch.utils.data.random_split(dataset, [0.95, 0.05])
-#train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
-#val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
+# train_set, val_set = torch.utils.data.random_split(dataset, [0.95, 0.05])
+# split_ind = int(0.95 * len(dataset))
+# train_set = TensorDataset(x[:split_ind], y[:split_ind])
+# val_set = TensorDataset(x[split_ind:], y[split_ind:])
+# train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
+# val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
 train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
@@ -77,6 +80,7 @@ def weight_init(m):
             nn.init.constant_(m.bias, 0)
 
 def train(train_queue, model, criterion, optimizer):
+    epoch_loss = 0.
     model.train() # mode change
 
     for step, (x_train, y_train) in enumerate(train_queue):
@@ -91,6 +95,10 @@ def train(train_queue, model, criterion, optimizer):
 
         loss.backward() # weight compute
         optimizer.step() # weight update
+
+        epoch_loss += loss.item()
+    
+    return epoch_loss / step
 
 def infer(eval_queue, model):
     model.eval()
@@ -140,11 +148,13 @@ optimizer = torch.optim.Adam(
 for epoch in trange(epochs):
     
     # training
-    train(train_loader, net, criterion, optimizer)
+    train_loss = train(train_loader, net, criterion, optimizer)
+    wandb.log({"train_loss": train_loss})
 
     # evaluating
     RMSLE = infer(train_loader, net)
-    wandb.log({"rmsle": RMSLE})
+    # RMSLE = infer(val_loader, net)
+    wandb.log({"valid_rmsle": RMSLE})
 
 if not os.path.exists("trained_pred"):
     os.mkdir("trained_pred")
