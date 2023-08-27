@@ -14,7 +14,7 @@ from utils import Net
 from utils import b_arch_to_feat, h_arch_to_feat
 from sklearn.metrics import mean_squared_log_error
 
-target = "galaxy10"
+target = "galaxy_s22_gpu"
 pred_target = "head"
 seed = 10
 epoches = 5000
