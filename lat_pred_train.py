@@ -1,24 +1,29 @@
 import json
 import os
+import sys
+
 import numpy as np
 import torch
-import torch.nn as nn
 import torch.backends.cudnn as cudnn
+import torch.nn as nn
 from torch.autograd import Variable
-from torch.utils.data import TensorDataset, DataLoader
+from torch.utils.data import DataLoader, TensorDataset
+from tqdm import trange
 
-import sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
-from utils import Net
-from utils import b_arch_to_feat, h_arch_to_feat
 from sklearn.metrics import mean_squared_log_error
 
+from utils import Net, b_arch_to_feat, h_arch_to_feat
+
+use_wandb = True
+
 target = "galaxy_s22_gpu"
-pred_target = "head"
+pred_target = "backbone"
 seed = 10
-epoches = 5000
+epochs = 500
 batch_size = 128
+lr = 5e-5
 
 file_path = os.path.join("./latency/{}_{}.json".format(target, pred_target))
 
@@ -52,6 +57,17 @@ dataset = TensorDataset(x, y)
 #val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
 train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+if use_wandb:
+    import wandb
+    run = wandb.init(
+        project=f"lut_pred_train_{target}_{pred_target}",
+        config={
+            "learning_rate": lr,
+            "epochs": epochs,
+            "seed": seed,
+            "batch_size": batch_size,
+        })
 
 
 def weight_init(m):
@@ -115,22 +131,22 @@ net.apply(weight_init)
 
 optimizer = torch.optim.Adam(
     net.parameters(),
-    lr=1e-4,
+    lr=lr,
     betas=(0.9,0.999),
     weight_decay=1e-4,
     eps=1e-08
 )
 
-for epoch in range(epoches):
+for epoch in trange(epochs):
     
     # training
     train(train_loader, net, criterion, optimizer)
 
     # evaluating
-    if (epoch+1) % 100 == 0:
-        RMSLE = infer(train_loader, net)
-        print('training... ', epoch+1)
-        print(RMSLE)
+    RMSLE = infer(train_loader, net)
+    wandb.log({"rmsle": RMSLE})
 
-
+if not os.path.exists("trained_pred"):
+    os.mkdir("trained_pred")
+    
 torch.save(net.state_dict(), os.path.join("trained_pred/{}_{}.pt".format(target,pred_target)))
