@@ -16,9 +16,9 @@ from sklearn.metrics import mean_squared_log_error
 
 from utils import Net, b_arch_to_feat, h_arch_to_feat
 
-use_wandb = True
+use_wandb = False
 
-target = "galaxy_s22_gpu"
+target = "galaxy_s10_nnapi"
 pred_target = "backbone"
 seed = 10
 epochs = 500
@@ -145,16 +145,23 @@ optimizer = torch.optim.Adam(
     eps=1e-08
 )
 
+min_valid_rmsle = float("inf")
+
 for epoch in trange(epochs):
     
     # training
     train_loss = train(train_loader, net, criterion, optimizer)
-    wandb.log({"train_loss": train_loss})
 
     # evaluating
     RMSLE = infer(train_loader, net)
     # RMSLE = infer(val_loader, net)
-    wandb.log({"valid_rmsle": RMSLE})
+    min_valid_rmsle = min(min_valid_rmsle, RMSLE)
+
+    if use_wandb:
+        wandb.log({"train_loss": train_loss})
+        wandb.log({"valid_rmsle": RMSLE})
+
+print(f"min_valid_rmsle of {file_path}: {min_valid_rmsle}")
 
 if not os.path.exists("trained_pred"):
     os.mkdir("trained_pred")
