@@ -31,10 +31,17 @@ def get_model_stats(model,
 
 def get_some_data(train_dataloader, num_batches, device):
     traindata = []
-    dataloader_iter = iter(train_dataloader)
+    trainlabel = []
+    dataloader_iter = iter(train_dataloader[0])
+    labelloader_iter = iter(train_dataloader[1])
     for _ in range(num_batches):
         traindata.append(next(dataloader_iter))
-    inputs = torch.cat([a for a, _ in traindata])
+
+
+    print(len(train_dataloader[0]))
+    print(len(train_dataloader[1]))
+
+    inputs = torch.cat([a for a in train_dataloader[0]])
     targets = torch.cat([b for _, b in traindata])
     inputs = inputs.to(device)
     targets = targets.to(device)

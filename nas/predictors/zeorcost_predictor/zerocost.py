@@ -8,7 +8,7 @@ import logging
 import math
 import torch.nn.functional as F
 
-import predictive
+from nas.predictors.zeorcost_predictor.predictive import find_measures
 
 logger = logging.getLogger(__name__)
 
@@ -23,10 +23,10 @@ class ZeroCost():
         self.num_imgs_or_batches = 1
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    def query(self, graph, dataloader=None, info=None):
-        loss_fn = graph.get_loss_fn()
+    def query(self, net, loss, dataloader=None, info=None):
+        loss_fn = loss
 
-        n_classes = graph.num_classes
+        n_classes = net.nc
         """
         params:
             net_orig:
@@ -44,8 +44,8 @@ class ZeroCost():
             measures_arr:
                 [not used] if the measures are already computed but need to be summarized, pass them here
         """
-        score = predictive.find_measures(
-                net_orig=graph,                                                     
+        score = find_measures(
+                net_orig=net,                                                     
                 dataloader=dataloader,
                 dataload_info=(self.dataload, self.num_imgs_or_batches, n_classes),
                 device=self.device,
