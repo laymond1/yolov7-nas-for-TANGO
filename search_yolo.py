@@ -59,7 +59,7 @@ def run_search(opt):
     constraint_type, efficiency_constraint, accuracy_predictor = \
         opt.constraint_type, opt.efficiency_constraint, opt.accuracy_predictor
     
-    efficiency_predictor = LatencyPredictor(target="galaxy10")
+    efficiency_predictor = LatencyPredictor(target="galaxy_s10_cpu")
     
     device = select_device(opt.device)
     
