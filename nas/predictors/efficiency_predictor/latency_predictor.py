@@ -11,7 +11,8 @@ import copy
 
 class LatencyPredictor:
     def __init__(self, target):
-        path = os.path.dirname(os.path.realpath(__file__))
+        # path = os.path.dirname(os.path.realpath(__file__))
+        path = "./"
         bpred_path = os.path.join(path, "./trained_lat_pred/{}_backbone.pt".format(target))
         hpred_path = os.path.join(path, "./trained_lat_pred/{}_head.pt".format(target))
 
