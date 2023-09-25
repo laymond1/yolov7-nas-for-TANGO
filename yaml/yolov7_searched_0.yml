@@ -50,7 +50,7 @@ backbone:
   - BBoneELAN
   - - 64
     - 3
-    - 3
+    - 2
 - - -1
   - 1
   - DyConv
@@ -89,7 +89,7 @@ backbone:
   - BBoneELAN
   - - 128
     - 3
-    - 2
+    - 1
 - - -1
   - 1
   - DyConv
@@ -128,7 +128,7 @@ backbone:
   - BBoneELAN
   - - 256
     - 3
-    - 3
+    - 1
 - - -1
   - 1
   - DyConv
@@ -167,7 +167,7 @@ backbone:
   - BBoneELAN
   - - 256
     - 3
-    - 3
+    - 1
 - - -1
   - 1
   - DyConv
@@ -207,7 +207,7 @@ head:
   - HeadELAN
   - - 256
     - 3
-    - 4
+    - 3
 - - -1
   - 1
   - DyConv
@@ -242,7 +242,7 @@ head:
   - HeadELAN
   - - 128
     - 3
-    - 3
+    - 1
 - - -1
   - 1
   - DyConv
@@ -282,7 +282,7 @@ head:
   - HeadELAN
   - - 256
     - 3
-    - 5
+    - 1
 - - -1
   - 1
   - DyConv
@@ -322,7 +322,7 @@ head:
   - HeadELAN
   - - 512
     - 3
-    - 4
+    - 1
 - - -1
   - 1
   - DyConv

@@ -22,11 +22,12 @@ def parse_args():
     parser.add_argument("--mutate-prob", default=0.1, type=float, help="mutate probability")
     parser.add_argument("--mutation-ratio", default=0.5, type=float, help="mutation ratio")
     # hyp params for search type
-    parser.add_argument("--constraint-type", default="flops", type=str, help="constraint type")
-    parser.add_argument("--flops", default=600, type=float, help="flops")
+    parser.add_argument("--constraint-type", default="galaxy10", type=str, help="constraint type")
+    parser.add_argument("--efficiency_constraint", default=3000, type=float, help="flops")
     parser.add_argument("--efficiency-predictor", default=None, type=str, help="efficiency predictor")
     # hyp parmas for accuracy predictor
     parser.add_argument("--accuracy-predictor", default=None, type=str, help="accuracy predictor")
+    # parser.add_argument("--weights", default="yolo_nas_supernet.pt", type=str, help="weights path")
     parser.add_argument("--weights", default="yolo_nas_supernet.pt", type=str, help="weights path")
     parser.add_argument('--cfg', type=str, default='./yaml/yolov7_supernet.yml', help='model.yaml path')
     parser.add_argument('--data', default='./yaml/data/coco128.yaml', type=str, help='data.yaml path')
@@ -57,11 +58,11 @@ def parse_args():
 
 def run_search(opt):
     constraint_type, efficiency_constraint, accuracy_predictor = \
-        opt.constraint_type, opt.flops, opt.accuracy_predictor
-    
-    efficiency_predictor = LatencyPredictor(target="galaxy10")
-    
+        opt.constraint_type, opt.efficiency_constraint, opt.accuracy_predictor
+
     device = select_device(opt.device)
+    
+    efficiency_predictor = LatencyPredictor(target="galaxy10", device=device)
     
     # Create model
     supernet = attempt_load(opt.weights, map_location=device)
@@ -79,16 +80,19 @@ def run_search(opt):
 
     # start searching
     result_list = []
-    for flops in [opt.flops]:
+    for flops in [efficiency_constraint]:
         st = time.time()
         finder.set_efficiency_constraint(flops)
         best_valids, best_info = finder.run_evolution_search()
         ed = time.time()
-        print('Found best architecture at flops <= %.2f M in %.2f seconds! It achieves %.2f%s predicted accuracy with %.2f MFLOPs.' % (flops, ed-st, best_info[0] * 100, '%', best_info[-1]))
+        # print('Found best architecture at flops <= %.2f M in %.2f seconds! It achieves %.2f%s predicted accuracy with %.2f MFLOPs.' % (flops, ed-st, best_info[0] * 100, '%', best_info[-1]))
         result_list.append(best_info)
         
     # save model into yaml
+    print('=============================================================================')
     print('save model into yaml')
+    print(result_list)
+    print('=============================================================================')
     for i, result in enumerate(result_list):
         best_depth = result[1]['d']
         # Active subet

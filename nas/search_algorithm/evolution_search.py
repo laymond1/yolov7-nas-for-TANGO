@@ -38,7 +38,7 @@ class ArchManager:
 class EvolutionFinder:
 
     valid_constraint_range = {
-        "flops": [150, 600],
+        "galaxy10": [150, 5000],
         "note10": [15, 60],
     }
     def __init__(
@@ -64,11 +64,11 @@ class EvolutionFinder:
         self.arch_manager = ArchManager()
         self.num_blocks = self.arch_manager.num_blocks # [4, 4]
 
-        self.mutate_prob = kwargs.get("mutate_prob", 0.1)
-        self.population_size = kwargs.get("population_size", 5)
-        self.max_time_budget = kwargs.get("max_time_budget", 5)
-        self.parent_ratio = kwargs.get("parent_ratio", 0.25)
-        self.mutation_ratio = kwargs.get("mutation_ratio", 0.5)
+        self.mutate_prob = kwargs.get("mutate_prob", 1.)
+        self.population_size = kwargs.get("population_size", 1)
+        self.max_time_budget = kwargs.get("max_time_budget", 1)
+        self.parent_ratio = kwargs.get("parent_ratio", 1.)
+        self.mutation_ratio = kwargs.get("mutation_ratio", 1.)
         
     def invite_reset_constraint_type(self):
         print(
@@ -152,12 +152,12 @@ class EvolutionFinder:
 
     def run_evolution_search(self, verbose=False):
         """Run a single roll-out of regularized evolution to a fixed time budget."""
-        max_time_budget = self.max_time_budget
+        max_time_budget = self.max_time_budget  #
         population_size = self.population_size
         mutation_numbers = int(round(self.mutation_ratio * population_size))
         parents_size = int(round(self.parent_ratio * population_size))
         constraint = self.efficiency_constraint
-
+        
         best_valids = [-100]
         population = []  # (validation, sample, latency) tuples
         child_pool = []
@@ -165,11 +165,12 @@ class EvolutionFinder:
 
         for _ in trange(population_size, desc="Generate random population..."):
             sample, efficiency = self.random_sample()
-            acc = self.accuracy_predictor.predict_accuracy_once(sample)
-            population.append((acc, sample, efficiency))
+            acc, subnet = self.accuracy_predictor.predict_accuracy_once(sample)
+            population.append((acc, sample, efficiency, subnet))
 
         if verbose:
             print("Start Evolution...")
+
         # After the population is seeded, proceed with evolving the population.
         for iter in tqdm(
             range(max_time_budget),

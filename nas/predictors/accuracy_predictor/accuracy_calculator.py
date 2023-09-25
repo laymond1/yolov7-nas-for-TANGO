@@ -148,6 +148,6 @@ class AccuracyCalculator():
             
         # mp, mr, map50, map, avg_loss = results
         map = results[3]
-        return map
+        return map, subnet
     
     
