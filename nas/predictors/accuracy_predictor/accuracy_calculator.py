@@ -85,6 +85,12 @@ class AccuracyCalculator():
             runtime_depth: list of int
                 list of depth for each ELANBlock of subnetwork, but initialized int at first
         """  
+        subnet = YOLOModel
+        
+        self.runtime_depth = 0 
+        super(YOLOSuperNet, self).__init__(cfg, ch, nc, anchors)
+        self.depth_list = self.yaml['depth_list']
+        self.set_max_net()
         
         # finetune the subnet
         # subnet, maps = finetune(subnet, self.hyp, self.opt, self.device)
