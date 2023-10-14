@@ -25,7 +25,7 @@ if __name__ == '__main__':
     batch_size = args.batch_size
     lr = args.lr
 
-    file_path = os.path.join("./latency/{}_{}.json".format(target, pred_target))
+    file_path = os.path.join("./data/latency/{}_{}.json".format(target, pred_target))
 
     with open(file_path, "r") as f:
         lut = json.load(f)
