@@ -1,3 +1,6 @@
+# 학습 output 관련
+results
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

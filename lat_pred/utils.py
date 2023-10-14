@@ -20,35 +20,6 @@ def predictor_args():
     return parser.parse_args()
 
 
-def b_arch_to_feat(arch):
-    # This function converts a backbone config to a feature vector (20-D).
-    d_list = copy.deepcopy(arch['d'])
-
-    # convert to onehot -> 1~5의 scale에선 학습 잘 안됨 (normalization과 비슷)
-    # 5*4 = 20-D feature vector
-    onehot = [0 for _ in range(20)]
-
-    for i in range(4):
-        tidx = int(d_list[i]) - 1
-        onehot[i*5 + tidx] = 1
-
-    return torch.Tensor(onehot)
-
-
-def h_arch_to_feat(arch):
-    # This function converts a backbone config to a feature vector (20-D).
-    d_list = copy.deepcopy(arch['d'])
-
-    # 7*4 = 28-D feature vector
-    onehot = [0 for _ in range(28)]
-
-    for i in range(4):
-        tidx = int(d_list[i]) - 1
-        onehot[i*7 + tidx] = 1
-
-    return torch.Tensor(onehot)
-
-
 class Net(nn.Module):
     """
     The base model for MAML (Meta-SGD) for meta-NAS-predictor.

@@ -202,43 +202,19 @@ def padzero( mx, ifAdj, maxsize=7):
     return mx
 
 
-def arch_encoding_ofa(arch):
-    # This function converts a network config to a feature vector (128-D).
-    ks_list, ex_list, d_list, r = copy.deepcopy(arch['ks']), copy.deepcopy(arch['e']), copy.deepcopy(arch['d']), arch['r']
-    
-    ks_map = {}
-    ks_map[3]=0
-    ks_map[5]=1
-    ks_map[7]=2
-    ex_map = {}
-    ex_map[3]=0
-    ex_map[4]=1
-    ex_map[6]=2
-    
-    
-    start = 0
-    end = 4
-    for d in d_list:
-        for j in range(start+d, end):
-            ks_list[j] = 0
-            ex_list[j] = 0
-        start += 4
-        end += 4
+def arch_encoding_ofa(arch, max_depth):
+    # This function converts a backbone config to a feature vector.
+    d_list = copy.deepcopy(arch['d'])
 
-    # convert to onehot
-    ks_onehot = [0 for _ in range(60)]
-    ex_onehot = [0 for _ in range(60)]
-    r_onehot = [0 for _ in range(25)] #128 ~ 224
+    # convert to onehot -> 1~5(or 1~7)의 scale에선 학습 잘 안됨 (normalization과 비슷)
+    # 5*4 = 20-D feature vector, 7*4 = 28-D feature vector
+    onehot = [0] * (4 * max_depth)
 
-    for i in range(20):
-        start = i * 3
-        if ks_list[i] != 0:
-            ks_onehot[start + ks_map[ks_list[i]]] = 1
-        if ex_list[i] != 0:
-            ex_onehot[start + ex_map[ex_list[i]]] = 1
+    for i in range(4):
+        tidx = d_list[i] - 1
+        onehot[i * max_depth + tidx] = 1
 
-    r_onehot[(r - 128) // 4] = 1
-    return torch.Tensor(ks_onehot + ex_onehot + r_onehot)
+    return torch.Tensor(onehot)
 
 
 def data_norm(v, src, des):
