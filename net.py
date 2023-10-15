@@ -1,6 +1,6 @@
 ####################################################################################################
 # HELP: hardware-adaptive efficient latency prediction for nas via meta-learning, NeurIPS 2021
-# Hayeon Lee, Sewoong Lee, Song Chong, Sung Ju Hwang 
+# Hayeon Lee, Sewoong Lee, Song Chong, Sung Ju Hwang
 # github: https://github.com/HayeonLee/HELP, email: hayeon926@kaist.ac.kr
 ####################################################################################################
 from collections import OrderedDict
@@ -54,13 +54,13 @@ class InferenceNetwork(nn.Module):
         z = None
         kl = 0.
 
-        kl = kl + kl_z 
-        z_ = q_z.rsample() if not self.determ else q_z.mean 
-        zw_ = z_[:(self.layer_size*2)*3].squeeze()     # even indices for weights 
-        zb_ = z_[(self.layer_size*2)*3:].squeeze()     # odd indices for biases 
+        kl = kl + kl_z
+        z_ = q_z.rsample() if not self.determ else q_z.mean
+        zw_ = z_[:(self.layer_size*2)*3].squeeze()     # even indices for weights
+        zb_ = z_[(self.layer_size*2)*3:].squeeze()     # odd indices for biases
         z = {'w':zw_, 'b':zb_}
 
-        return z, kl 
+        return z, kl
 
 def kl_diagnormal_stdnormal(p):
     pshape = p.mean.shape
@@ -73,13 +73,13 @@ class MetaLearner(nn.Module):
 
     def __init__(self,
                     nfeat,
-                    hw_embed_on, 
-                    hw_embed_dim, 
+                    hw_embed_on,
+                    hw_embed_dim,
                     layer_size):
         super(MetaLearner, self).__init__()
-        self.meta_learner = Net(nfeat=nfeat, 
+        self.meta_learner = Net(nfeat=nfeat,
                                 hw_embed_on=hw_embed_on,
-                                hw_embed_dim=hw_embed_dim, 
+                                hw_embed_dim=hw_embed_dim,
                                 layer_size=layer_size)
 
     def forward(self, X, hw_embed, adapted_params=None):
@@ -112,7 +112,7 @@ class Net(nn.Module):
         if hw_embed_on:
             self.add_module('fc_hw1', nn.Linear(hw_embed_dim, layer_size))
             self.add_module('fc_hw2', nn.Linear(layer_size, layer_size))
-            hfeat = layer_size * 2 
+            hfeat = layer_size * 2
         else:
             hfeat = layer_size
 
@@ -142,7 +142,7 @@ class Net(nn.Module):
                                 params['meta_learner.fc1.bias']))
             out = F.relu(F.linear(out, params['meta_learner.fc2.weight'],
                                 params['meta_learner.fc2.bias']))
-            
+
             if self.hw_embed_on:
                 hw = F.relu(F.linear(hw_embed, params['meta_learner.fc_hw1.weight'],
                                     params['meta_learner.fc_hw1.bias']))
@@ -155,7 +155,7 @@ class Net(nn.Module):
             out = F.relu(F.linear(out, params['meta_learner.fc4.weight'],
                                 params['meta_learner.fc4.bias']))
             out = F.linear(out, params['meta_learner.fc5.weight'],
-                                params['meta_learner.fc5.bias']) 
+                                params['meta_learner.fc5.bias'])
 
         return out
 
@@ -176,11 +176,11 @@ class GCN(nn.Module):
                 input_dim = nfeat
             else:
                 input_dim = layer_size
-            self.add_module(f'gc{i}', GraphConvolution(input_dim, layer_size))        
+            self.add_module(f'gc{i}', GraphConvolution(input_dim, layer_size))
         if self.hw_embed_on:
             self.add_module('fc_hw1', nn.Linear(hw_embed_dim, layer_size))
             self.add_module('fc_hw2', nn.Linear(layer_size, layer_size))
-            hfeat = self.layer_size * 2 
+            hfeat = self.layer_size * 2
         else:
             hfeat = self.layer_size
 
@@ -227,15 +227,15 @@ class GCN(nn.Module):
             out = out.transpose(1, 2)
             out = F.relu(self.gc2(out, adj, weight=params['meta_learner.gc2.weight'],
                                 bias =params['meta_learner.gc2.bias']).transpose(2,1))
-            out = out.transpose(1, 2)         
+            out = out.transpose(1, 2)
             out = F.relu(self.gc3(out, adj, weight=params['meta_learner.gc3.weight'],
                                 bias =params['meta_learner.gc3.bias']).transpose(2,1))
-            out = out.transpose(1, 2)    
+            out = out.transpose(1, 2)
             out = F.relu(self.gc4(out, adj, weight=params['meta_learner.gc4.weight'],
                                 bias =params['meta_learner.gc4.bias']).transpose(2,1))
-            out = out.transpose(1, 2)                        
+            out = out.transpose(1, 2)
             out = out[:, out.size()[1] - 1, :]
-            
+
             if self.hw_embed_on:
                 hw = F.relu(F.linear(hw_embed, params['meta_learner.fc_hw1.weight'],
                                     params['meta_learner.fc_hw1.bias']))
@@ -248,7 +248,7 @@ class GCN(nn.Module):
             out = F.relu(F.linear(out, params['meta_learner.fc4.weight'],
                                 params['meta_learner.fc4.bias']))
             out = F.linear(out, params['meta_learner.fc5.weight'],
-                                params['meta_learner.fc5.bias']) 
+                                params['meta_learner.fc5.bias'])
 
         return out
 
@@ -283,7 +283,7 @@ class GraphConvolution(nn.Module):
                 return output+bias
             else:
                 return output
-            
+
         else :
             support = torch.matmul(input_, self.weight)
             output = torch.bmm(adj, support)

@@ -1,6 +1,6 @@
 ####################################################################################################
 # HELP: hardware-adaptive efficient latency prediction for nas via meta-learning, NeurIPS 2021
-# Hayeon Lee, Sewoong Lee, Song Chong, Sung Ju Hwang 
+# Hayeon Lee, Sewoong Lee, Song Chong, Sung Ju Hwang
 # github: https://github.com/HayeonLee/HELP, email: hayeon926@kaist.ac.kr
 ####################################################################################################
 import json
@@ -54,13 +54,13 @@ class HELP:
         self.latency_constraint = args.latency_constraint
         # Data
         self.data = Data(mode=args.mode,
-                        data_path=args.data_path, 
-                        meta_train_devices=args.meta_train_devices, 
+                        data_path=args.data_path,
+                        meta_train_devices=args.meta_train_devices,
                         meta_valid_devices=args.meta_valid_devices,
                         meta_test_devices=args.meta_test_devices,
-                        num_inner_tasks=args.num_inner_tasks, 
+                        num_inner_tasks=args.num_inner_tasks,
                         num_meta_train_sample=args.num_meta_train_sample,
-                        num_sample=args.num_samples, 
+                        num_sample=args.num_samples,
                         num_query=args.num_query)
         # Model
         nfeat = 28 if self.data.head_or_backbone else 20
@@ -73,7 +73,7 @@ class HELP:
             self.define_task_lr_params()
             self.model_params += list(self.task_lr.values())
         else: self.task_lr = None
-        
+
         if self.z_on:
             self.inference_network = InferenceNetwork(args.hw_embed_on,
                                         args.hw_embed_dim,
@@ -89,27 +89,28 @@ class HELP:
             # Set the logger
             set_logger(os.path.join(self.save_path, 'log.txt'))
             if args.use_wandb:
-                wandb.init(project=args.project, 
-                            name=args.exp_name, 
-                            group=args.group, 
+                wandb.init(project=args.project,
+                            name=args.exp_name,
+                            group=args.group,
                             reinit=True)
-                wandb.config.update(args)   
+                wandb.config.update(args)
                 writer = None
             else:
                 writer = SummaryWriter(log_dir=self.save_path)
             self.log = {
-                        'meta_train': Log(self.save_path, 
-                                            self.save_summary_steps, 
-                                            self.metrics, 
-                                            self.meta_train_devices, 
-                                            'meta_train', 
-                                            writer, args.use_wandb),
-                        'meta_valid': Log(self.save_path, 
-                                            self.save_summary_steps, 
-                                            self.metrics, 
-                                            self.meta_valid_devices, 
-                                            'meta_valid', 
+                        'meta_train': Log(self.save_path,
+                                            self.save_summary_steps,
+                                            self.metrics,
+                                            self.meta_train_devices,
+                                            'meta_train',
                                             writer, 
+                                            args.use_wandb),
+                        'meta_valid': Log(self.save_path,
+                                            self.save_summary_steps,
+                                            self.metrics,
+                                            self.meta_valid_devices,
+                                            'meta_valid',
+                                            writer,
                                             args.use_wandb),
                         }
 
@@ -150,7 +151,7 @@ class HELP:
                     continue
                 params[name] = weight + zs*z['b'][idx]
             else: raise ValueError(name)
-        return params, kl, z 
+        return params, kl, z
 
     def train_single_task(self, hw_embed, xs, ys, num_updates):
         self.model.train()
@@ -163,7 +164,7 @@ class HELP:
             kl = 0.0
 
         adapted_params = params
-        
+
         for n in range(num_updates):
             ys_hat = self.model(xs, hw_embed, adapted_params)
             loss = self.loss_fn(ys_hat, ys)
@@ -225,7 +226,7 @@ class HELP:
                     self.scheduler.step(meta_loss)
 
                 # Evaluate model on new tasks
-                # Evaluate on train and test dataset given a number of tasks (args.num_steps)                
+                # Evaluate on train and test dataset given a number of tasks (args.num_steps)
                 if (i_epi + 1) % self.save_summary_steps == 0:
                     logging.info(f"Episode {i_epi+1}/{self.num_episodes}")
                     postfix = {}
@@ -236,10 +237,10 @@ class HELP:
                         for m in self.metrics + ['mse_loss', 'kl_loss']:
                             v = self.log[split].avg(i_epi, m)
                             postfix[f'{split}/{m}'] = f'{v:05.3f}'
-                            msg += f"{m}: {v:05.3f}; " 
+                            msg += f"{m}: {v:05.3f}; "
 
                             if m == 'spearman' and  max_valid_corr < v:
-                                max_valid_corr = v 
+                                max_valid_corr = v
                                 save_dict = {'epi': i_epi,
                                              'model': self.model.cpu().state_dict()}
                                 if self.args.z_on:
@@ -274,7 +275,7 @@ class HELP:
         if self.alpha_on:
             for (k, v), (lk, lv) in zip(self.task_lr.items(), loaded['task_lr'].items()):
                 self.task_lr[k] = lv.cuda()
-            
+
         self._test_predictor('meta_test', None)
 
 
@@ -287,7 +288,7 @@ class HELP:
         avg_metrics = {m: 0.0 for m in self.metrics}
         avg_metrics['mse_loss'] = 0.0
 
-        tasks = self.data.generate_test_tasks(split) 
+        tasks = self.data.generate_test_tasks(split)
         for (hw_embed, xs, ys, xq, yq, device) in tasks:
             yq_hat_mean = None
             for _ in range(self.mc_sampling):
@@ -301,11 +302,11 @@ class HELP:
                 else:
                     yq_hat_mean += yq_hat
             yq_hat_mean = yq_hat_mean / self.args.mc_sampling
-            loss = self.loss_fn(yq_hat_mean, yq)  
-            
+            loss = self.loss_fn(yq_hat_mean, yq)
+
             if i_epi is not None:
                 for metric in self.metrics:
-                    self.log[split].update(i_epi, metric, device, 
+                    self.log[split].update(i_epi, metric, device,
                                             val=metrics_fn[metric](yq_hat, yq)[0])
                 self.log[split].update(i_epi, 'mse_loss', device, val=loss.item())
                 self.log[split].update(i_epi, 'kl_loss', device, val=kl_loss if isinstance(kl_loss, float) else kl_loss.item())
@@ -329,7 +330,7 @@ class HELP:
             f.write(msg+'\n')
             print(msg)
         f.close()
-    
+
 
     def _denormalization(self, task, yq_hat, adapted_state_dict):
         hw_embed, xs, ys, xq, yq, device, ys_gt, yq_gt = task
@@ -340,11 +341,11 @@ class HELP:
         ysh_max = max(ys_hat)
 
         denorm_yq_hat = denorm((yq_hat-ysh_min)/(ysh_max-ysh_min), max(ys_gt), min(ys_gt))
-        denorm_mse = self.loss_fn(denorm_yq_hat.cuda(), yq_gt) 
-        return denorm_yq_hat, denorm_mse 
-      
+        denorm_mse = self.loss_fn(denorm_yq_hat.cuda(), yq_gt)
+        return denorm_yq_hat, denorm_mse
+
     def load_model(self):
-        loaded = torch.load(os.path.join(self.load_path))
+        loaded = torch.load(self.load_path)
         self.model.load_state_dict(loaded['model'])
         self.model.eval()
         self.model.cuda()
@@ -363,7 +364,7 @@ class HELP:
         from ofa.finder import EvolutionFinder
         from ofa.tutorial.accuracy_predictor import AccuracyPredictor
 
-        # load HELP 
+        # load HELP
         self.load_model()
 
         task = self.data.get_nas_task(self.nas_target_device)
@@ -385,7 +386,7 @@ class HELP:
         # load accuracy predictor of once-for-all
         acc_predictor = AccuracyPredictor(pretrained=True)
         params = {
-            'constraint_type': self.nas_target_device, 
+            'constraint_type': self.nas_target_device,
             'efficiency_constraint': latency_constraint,
             'hardware_embedding': hw_embed,
             'adapted_state_dict': adapted_state_dict,
@@ -399,7 +400,7 @@ class HELP:
             'max_time_budget': 500,
             'parent_ratio': 0.25,
         }
-        
+
         finder = EvolutionFinder(**params)
         best_valids, best_info, top_k = finder.run_evolution_search()
         pred_acc = best_info[0]

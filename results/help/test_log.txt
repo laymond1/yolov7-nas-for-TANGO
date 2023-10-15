@@ -1,0 +1,4 @@
+[meta_test/galaxy_s10_nnapi_head] spearman 0.117 MSE 0.090
+[meta_test/average] spearman 0.117 MSE 0.090 (1 devices)
+[meta_test/galaxy_s10_nnapi_head] spearman 0.117 MSE 0.090
+[meta_test/average] spearman 0.117 MSE 0.090 (1 devices)

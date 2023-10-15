@@ -1,5 +1,5 @@
 # 학습 output 관련
-results
+events.out.tfevents.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

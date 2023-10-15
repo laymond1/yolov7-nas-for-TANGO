@@ -1,6 +1,6 @@
 ####################################################################################################
 # HELP: hardware-adaptive efficient latency prediction for nas via meta-learning, NeurIPS 2021
-# Hayeon Lee, Sewoong Lee, Song Chong, Sung Ju Hwang 
+# Hayeon Lee, Sewoong Lee, Song Chong, Sung Ju Hwang
 # github: https://github.com/HayeonLee/HELP, email: hayeon926@kaist.ac.kr
 ####################################################################################################
 import argparse
@@ -24,13 +24,13 @@ def get_parser():
     parser.add_argument('--main_path', type=str, default='.')
     parser.add_argument('--img_size', type=int, default=32, help='32|224')
     parser.add_argument('--metrics', type=str2list, default=["spearman"], help="metric for ranking correlation between real and estimated latencies of architectures.")
-    parser.add_argument('--load_path', type=str, default='./data/nasbench201/checkpoint/help_max_corr.pt', help='model checkpoint path')    
+    parser.add_argument('--load_path', type=str, default='results/help/checkpoint/help_max_corr.pt', help='model checkpoint path')
     # Data & Meta-learning Settings
-    parser.add_argument('--meta_train_devices', type=str2list, 
+    parser.add_argument('--meta_train_devices', type=str2list,
                 default='1080ti_1,1080ti_32,1080ti_256,silver_4114,silver_4210r,samsung_a50,pixel3,essential_ph_1,samsung_s7')
-    parser.add_argument('--meta_valid_devices', type=str2list, 
+    parser.add_argument('--meta_valid_devices', type=str2list,
                 default='titanx_1,titanx_32,titanx_256,gold_6240')
-    parser.add_argument('--meta_test_devices', type=str2list, 
+    parser.add_argument('--meta_test_devices', type=str2list,
                 default='titan_rtx_256,gold_6226,fpga,pixel2,raspi4,eyeriss')
     parser.add_argument('--num_inner_tasks', type=int, default=3, help="the number of meta-batch")
     parser.add_argument('--num_meta_train_sample', type=int, default=900, help="the number of samples for each device in meta-training pool")

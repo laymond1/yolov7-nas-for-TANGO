@@ -95,7 +95,7 @@ class Log():
             log_dict = {f'{self.split}_{metric}/{device}': val}
             wandb.log(log_dict, step=i_epi)
         if self.writer is not None:
-            self.writer.add_scalar(f'{self.split}_{metric}/{device}', val, i_epi)  
+            self.writer.add_scalar(f'{self.split}_{metric}/{device}', val, i_epi)
 
     def avg(self, i_epi, metric, is_print=True):
         v = 0.0
