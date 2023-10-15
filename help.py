@@ -3,26 +3,20 @@
 # Hayeon Lee, Sewoong Lee, Song Chong, Sung Ju Hwang 
 # github: https://github.com/HayeonLee/HELP, email: hayeon926@kaist.ac.kr
 ####################################################################################################
-from curses import meta
-import os
-import logging
-from collections import OrderedDict
-from collections import defaultdict
-import csv
-from tqdm import tqdm
 import json
-#import wandb
+import logging
+import os
+from collections import OrderedDict
 
 import torch
 import torch.nn as nn
+import wandb
 from torch.utils.tensorboard import SummaryWriter
+from tqdm import tqdm
 
-from net import MetaLearner
-from net import Net
-from net import InferenceNetwork
 from loader import Data
+from net import InferenceNetwork, MetaLearner
 from utils import *
-
 
 
 class HELP:
@@ -95,13 +89,12 @@ class HELP:
             # Set the logger
             set_logger(os.path.join(self.save_path, 'log.txt'))
             if args.use_wandb:
-                wandb.init(entity="hayeonlee", 
-                            project=args.project, 
+                wandb.init(project=args.project, 
                             name=args.exp_name, 
                             group=args.group, 
                             reinit=True)
                 wandb.config.update(args)   
-                writer = None     
+                writer = None
             else:
                 writer = SummaryWriter(log_dir=self.save_path)
             self.log = {
@@ -367,9 +360,9 @@ class HELP:
 
 
     def _nas_ofa(self):
-        from ofa.tutorial.accuracy_predictor import AccuracyPredictor
         from ofa.finder import EvolutionFinder
-        
+        from ofa.tutorial.accuracy_predictor import AccuracyPredictor
+
         # load HELP 
         self.load_model()
 
