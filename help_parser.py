@@ -19,7 +19,7 @@ def get_parser():
     parser = argparse.ArgumentParser()
     # General Settings
     parser.add_argument('--gpu', type=str, default='0', help='set visible gpus')
-    parser.add_argument('--seed', type=int, default=3, help='set seed')
+    parser.add_argument('--seed', type=int, default=42, help='set seed')
     parser.add_argument('--mode', type=str, default=None, help='meta-train|meta-test|nas')
     parser.add_argument('--main_path', type=str, default='.')
     parser.add_argument('--img_size', type=int, default=32, help='32|224')
@@ -54,7 +54,7 @@ def get_parser():
     # Meta-learner
     parser.add_argument('--hw_embed_on', type=str2bool, default=True, help="on/off hardware-condtioned prediction")
     parser.add_argument('--hw_embed_dim', type=int, default=10, help="the dimension of hardware embedding")
-    parser.add_argument('--layer_size', type=int, default=64, help="the size of hidden layer of the predictor")
+    parser.add_argument('--layer_size', type=int, default=100, help="the size of hidden layer of the predictor")
     # Inference Network
     parser.add_argument('--z_on', type=str2bool, default=True, help="on/off z modulator")
     parser.add_argument('--determ', type=str2bool, default=False)

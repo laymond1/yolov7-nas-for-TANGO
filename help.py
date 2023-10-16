@@ -265,10 +265,10 @@ class HELP:
 
     def test_predictor(self):
         loaded = torch.load(self.load_path)
-        print(f'==> load {self.load_path}')
+        print(f'==> load path {self.load_path}')
         if 'epi' in loaded.keys():
             epi = loaded['epi']
-            print(f'==> load {epi} model..')
+            print(f'==> load episode-{epi} model..')
         self.model.load_state_dict(loaded['model'])
         if self.z_on:
             self.inference_network.load_state_dict(loaded['inference_network'])
@@ -317,7 +317,7 @@ class HELP:
                     avg_metrics[m] += metrics_fn[m](yq_hat, yq)[0]
                 msg += f'MSE {loss.item():.3f}'
                 avg_metrics['mse_loss'] += loss.item()
-                f.write(msg+'\n')
+                f.write(f'{msg}\n')
                 print(msg)
 
         if i_epi is None:
@@ -327,7 +327,7 @@ class HELP:
                 msg += f'{m} {avg_metrics[m]/nd:.3f} '
             mse_loss = avg_metrics['mse_loss']
             msg += f'MSE {mse_loss/nd:.3f} ({nd} devices)'
-            f.write(msg+'\n')
+            f.write(f'{msg} | layer_size: {self.layer_size}\n')
             print(msg)
         f.close()
 
