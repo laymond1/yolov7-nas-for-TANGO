@@ -1,6 +1,8 @@
 [meta_test/galaxy_s10_nnapi_head] spearman 0.139 MSE 0.085
-[meta_test/average] spearman 0.139 MSE 0.085 (1 devices) | layer_size: 200
+[meta_test/average] spearman 0.139 MSE 0.085 (1 devices) | layer_size: 200, learning rate: 5e-05
 [meta_test/galaxy_s10_nnapi_head] spearman 0.121 MSE 0.087
-[meta_test/average] spearman 0.121 MSE 0.087 (1 devices) | layer_size: 150
+[meta_test/average] spearman 0.121 MSE 0.087 (1 devices) | layer_size: 150, learning rate: 5e-05
 [meta_test/galaxy_s10_nnapi_head] spearman 0.166 MSE 0.087
-[meta_test/average] spearman 0.166 MSE 0.087 (1 devices) | layer_size: 100
+[meta_test/average] spearman 0.166 MSE 0.087 (1 devices) | layer_size: 100, learning rate: 5e-05
+[meta_test/galaxy_s10_nnapi_head] spearman 0.152 MSE 0.081
+[meta_test/average] spearman 0.152 MSE 0.081 (1 devices) | layer_size: 90, learning rate: 5e-05

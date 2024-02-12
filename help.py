@@ -327,7 +327,7 @@ class HELP:
                 msg += f'{m} {avg_metrics[m]/nd:.3f} '
             mse_loss = avg_metrics['mse_loss']
             msg += f'MSE {mse_loss/nd:.3f} ({nd} devices)'
-            f.write(f'{msg} | layer_size: {self.layer_size}\n')
+            f.write(f'{msg} | layer_size: {self.layer_size}, learning rate: {self.meta_lr}\n')
             print(msg)
         f.close()
 

@@ -1,45 +1,240 @@
-2023-10-16 10:54:16,314:INFO: Episode 50/4000
-2023-10-16 10:54:16,625:INFO: [META_TRAIN] spearman: 0.027; mse_loss: 0.291; kl_loss: 81.061; 
-2023-10-16 10:54:16,811:INFO: [META_VALID] spearman: -0.022; mse_loss: 0.209; kl_loss: 79.196; 
-2023-10-16 10:54:19,841:INFO: Episode 100/4000
-2023-10-16 10:54:20,146:INFO: [META_TRAIN] spearman: 0.042; mse_loss: 0.155; kl_loss: 78.629; 
-2023-10-16 10:54:20,335:INFO: [META_VALID] spearman: -0.032; mse_loss: 0.119; kl_loss: 76.905; 
-2023-10-16 10:54:23,396:INFO: Episode 150/4000
-2023-10-16 10:54:23,703:INFO: [META_TRAIN] spearman: 0.135; mse_loss: 0.144; kl_loss: 76.575; 
-2023-10-16 10:54:23,882:INFO: [META_VALID] spearman: 0.031; mse_loss: 0.122; kl_loss: 74.948; 
-2023-10-16 10:54:26,906:INFO: Episode 200/4000
-2023-10-16 10:54:27,220:INFO: [META_TRAIN] spearman: 0.205; mse_loss: 0.140; kl_loss: 74.650; 
-2023-10-16 10:54:27,396:INFO: [META_VALID] spearman: 0.087; mse_loss: 0.118; kl_loss: 73.115; 
-2023-10-16 10:54:30,411:INFO: Episode 250/4000
-2023-10-16 10:54:30,740:INFO: [META_TRAIN] spearman: 0.250; mse_loss: 0.141; kl_loss: 72.877; 
-2023-10-16 10:54:30,925:INFO: [META_VALID] spearman: 0.132; mse_loss: 0.118; kl_loss: 71.426; 
-2023-10-16 10:54:33,792:INFO: Episode 300/4000
-2023-10-16 10:54:34,075:INFO: [META_TRAIN] spearman: 0.282; mse_loss: 0.136; kl_loss: 71.174; 
-2023-10-16 10:54:34,257:INFO: [META_VALID] spearman: 0.164; mse_loss: 0.120; kl_loss: 69.790; 
-2023-10-16 10:54:37,324:INFO: Episode 350/4000
-2023-10-16 10:54:37,627:INFO: [META_TRAIN] spearman: 0.303; mse_loss: 0.136; kl_loss: 69.507; 
-2023-10-16 10:54:37,806:INFO: [META_VALID] spearman: 0.192; mse_loss: 0.117; kl_loss: 68.187; 
-2023-10-16 10:54:40,849:INFO: Episode 400/4000
-2023-10-16 10:54:41,117:INFO: [META_TRAIN] spearman: 0.316; mse_loss: 0.130; kl_loss: 67.986; 
-2023-10-16 10:54:41,270:INFO: [META_VALID] spearman: 0.212; mse_loss: 0.121; kl_loss: 66.719; 
-2023-10-16 10:54:44,354:INFO: Episode 450/4000
-2023-10-16 10:54:44,606:INFO: [META_TRAIN] spearman: 0.319; mse_loss: 0.136; kl_loss: 66.509; 
-2023-10-16 10:54:44,797:INFO: [META_VALID] spearman: 0.221; mse_loss: 0.131; kl_loss: 65.285; 
-2023-10-16 10:54:47,791:INFO: Episode 500/4000
-2023-10-16 10:54:48,104:INFO: [META_TRAIN] spearman: 0.318; mse_loss: 0.133; kl_loss: 65.080; 
-2023-10-16 10:54:48,299:INFO: [META_VALID] spearman: 0.225; mse_loss: 0.124; kl_loss: 63.904; 
-2023-10-16 10:54:51,326:INFO: Episode 550/4000
-2023-10-16 10:54:51,609:INFO: [META_TRAIN] spearman: 0.315; mse_loss: 0.140; kl_loss: 63.635; 
-2023-10-16 10:54:51,819:INFO: [META_VALID] spearman: 0.228; mse_loss: 0.140; kl_loss: 62.568; 
-2023-10-16 10:54:54,840:INFO: Episode 600/4000
-2023-10-16 10:54:55,139:INFO: [META_TRAIN] spearman: 0.316; mse_loss: 0.137; kl_loss: 62.197; 
-2023-10-16 10:54:55,319:INFO: [META_VALID] spearman: 0.231; mse_loss: 0.134; kl_loss: 61.251; 
-2023-10-16 10:54:58,411:INFO: Episode 650/4000
-2023-10-16 10:54:58,698:INFO: [META_TRAIN] spearman: 0.314; mse_loss: 0.133; kl_loss: 60.810; 
-2023-10-16 10:54:58,892:INFO: [META_VALID] spearman: 0.233; mse_loss: 0.145; kl_loss: 59.986; 
-2023-10-16 10:55:01,825:INFO: Episode 700/4000
-2023-10-16 10:55:02,134:INFO: [META_TRAIN] spearman: 0.315; mse_loss: 0.136; kl_loss: 59.487; 
-2023-10-16 10:55:02,326:INFO: [META_VALID] spearman: 0.233; mse_loss: 0.131; kl_loss: 58.759; 
-2023-10-16 10:55:05,293:INFO: Episode 750/4000
-2023-10-16 10:55:05,602:INFO: [META_TRAIN] spearman: 0.316; mse_loss: 0.135; kl_loss: 58.209; 
-2023-10-16 10:55:05,804:INFO: [META_VALID] spearman: 0.236; mse_loss: 0.133; kl_loss: 57.616; 
+2023-10-16 11:16:00,170:INFO: Episode 50/4000
+2023-10-16 11:16:00,549:INFO: [META_TRAIN] spearman: -0.068; mse_loss: 0.128; kl_loss: 204.869; 
+2023-10-16 11:16:00,757:INFO: [META_VALID] spearman: 0.003; mse_loss: 0.112; kl_loss: 204.976; 
+2023-10-16 11:16:03,881:INFO: Episode 100/4000
+2023-10-16 11:16:04,204:INFO: [META_TRAIN] spearman: 0.240; mse_loss: 0.136; kl_loss: 201.538; 
+2023-10-16 11:16:04,401:INFO: [META_VALID] spearman: 0.239; mse_loss: 0.122; kl_loss: 201.881; 
+2023-10-16 11:16:07,503:INFO: Episode 150/4000
+2023-10-16 11:16:07,832:INFO: [META_TRAIN] spearman: 0.323; mse_loss: 0.126; kl_loss: 198.372; 
+2023-10-16 11:16:08,031:INFO: [META_VALID] spearman: 0.285; mse_loss: 0.119; kl_loss: 198.926; 
+2023-10-16 11:16:11,141:INFO: Episode 200/4000
+2023-10-16 11:16:11,450:INFO: [META_TRAIN] spearman: 0.336; mse_loss: 0.136; kl_loss: 195.377; 
+2023-10-16 11:16:11,645:INFO: [META_VALID] spearman: 0.286; mse_loss: 0.138; kl_loss: 196.159; 
+2023-10-16 11:16:14,716:INFO: Episode 250/4000
+2023-10-16 11:16:15,002:INFO: [META_TRAIN] spearman: 0.331; mse_loss: 0.130; kl_loss: 192.535; 
+2023-10-16 11:16:15,193:INFO: [META_VALID] spearman: 0.284; mse_loss: 0.138; kl_loss: 193.521; 
+2023-10-16 11:16:18,297:INFO: Episode 300/4000
+2023-10-16 11:16:18,609:INFO: [META_TRAIN] spearman: 0.334; mse_loss: 0.132; kl_loss: 189.715; 
+2023-10-16 11:16:18,795:INFO: [META_VALID] spearman: 0.286; mse_loss: 0.144; kl_loss: 190.853; 
+2023-10-16 11:16:21,855:INFO: Episode 350/4000
+2023-10-16 11:16:22,162:INFO: [META_TRAIN] spearman: 0.335; mse_loss: 0.132; kl_loss: 186.941; 
+2023-10-16 11:16:22,363:INFO: [META_VALID] spearman: 0.284; mse_loss: 0.160; kl_loss: 188.214; 
+2023-10-16 11:16:25,430:INFO: Episode 400/4000
+2023-10-16 11:16:25,730:INFO: [META_TRAIN] spearman: 0.334; mse_loss: 0.130; kl_loss: 184.341; 
+2023-10-16 11:16:25,941:INFO: [META_VALID] spearman: 0.280; mse_loss: 0.149; kl_loss: 185.778; 
+2023-10-16 11:16:28,899:INFO: Episode 450/4000
+2023-10-16 11:16:29,208:INFO: [META_TRAIN] spearman: 0.333; mse_loss: 0.132; kl_loss: 181.736; 
+2023-10-16 11:16:29,411:INFO: [META_VALID] spearman: 0.275; mse_loss: 0.146; kl_loss: 183.327; 
+2023-10-16 11:16:32,564:INFO: Episode 500/4000
+2023-10-16 11:16:32,887:INFO: [META_TRAIN] spearman: 0.333; mse_loss: 0.137; kl_loss: 179.144; 
+2023-10-16 11:16:33,072:INFO: [META_VALID] spearman: 0.278; mse_loss: 0.124; kl_loss: 180.818; 
+2023-10-16 11:16:36,088:INFO: Episode 550/4000
+2023-10-16 11:16:36,389:INFO: [META_TRAIN] spearman: 0.332; mse_loss: 0.143; kl_loss: 176.561; 
+2023-10-16 11:16:36,592:INFO: [META_VALID] spearman: 0.270; mse_loss: 0.138; kl_loss: 178.379; 
+2023-10-16 11:16:39,537:INFO: Episode 600/4000
+2023-10-16 11:16:39,848:INFO: [META_TRAIN] spearman: 0.328; mse_loss: 0.134; kl_loss: 173.991; 
+2023-10-16 11:16:40,052:INFO: [META_VALID] spearman: 0.268; mse_loss: 0.128; kl_loss: 175.911; 
+2023-10-16 11:16:43,112:INFO: Episode 650/4000
+2023-10-16 11:16:43,423:INFO: [META_TRAIN] spearman: 0.329; mse_loss: 0.143; kl_loss: 171.413; 
+2023-10-16 11:16:43,626:INFO: [META_VALID] spearman: 0.265; mse_loss: 0.159; kl_loss: 173.442; 
+2023-10-16 11:16:46,555:INFO: Episode 700/4000
+2023-10-16 11:16:46,861:INFO: [META_TRAIN] spearman: 0.326; mse_loss: 0.139; kl_loss: 168.807; 
+2023-10-16 11:16:47,053:INFO: [META_VALID] spearman: 0.267; mse_loss: 0.135; kl_loss: 170.966; 
+2023-10-16 11:16:50,225:INFO: Episode 750/4000
+2023-10-16 11:16:50,543:INFO: [META_TRAIN] spearman: 0.326; mse_loss: 0.143; kl_loss: 166.199; 
+2023-10-16 11:16:50,757:INFO: [META_VALID] spearman: 0.263; mse_loss: 0.168; kl_loss: 168.516; 
+2023-10-16 11:16:53,907:INFO: Episode 800/4000
+2023-10-16 11:16:54,219:INFO: [META_TRAIN] spearman: 0.319; mse_loss: 0.148; kl_loss: 163.599; 
+2023-10-16 11:16:54,405:INFO: [META_VALID] spearman: 0.261; mse_loss: 0.146; kl_loss: 166.138; 
+2023-10-16 11:16:57,521:INFO: Episode 850/4000
+2023-10-16 11:16:57,817:INFO: [META_TRAIN] spearman: 0.320; mse_loss: 0.148; kl_loss: 160.940; 
+2023-10-16 11:16:58,030:INFO: [META_VALID] spearman: 0.258; mse_loss: 0.142; kl_loss: 163.536; 
+2023-10-16 11:17:01,169:INFO: Episode 900/4000
+2023-10-16 11:17:01,477:INFO: [META_TRAIN] spearman: 0.314; mse_loss: 0.152; kl_loss: 158.254; 
+2023-10-16 11:17:01,665:INFO: [META_VALID] spearman: 0.258; mse_loss: 0.142; kl_loss: 160.877; 
+2023-10-16 11:17:04,791:INFO: Episode 950/4000
+2023-10-16 11:17:05,107:INFO: [META_TRAIN] spearman: 0.310; mse_loss: 0.149; kl_loss: 155.532; 
+2023-10-16 11:17:05,321:INFO: [META_VALID] spearman: 0.251; mse_loss: 0.132; kl_loss: 158.214; 
+2023-10-16 11:17:08,465:INFO: Episode 1000/4000
+2023-10-16 11:17:08,745:INFO: [META_TRAIN] spearman: 0.305; mse_loss: 0.148; kl_loss: 152.758; 
+2023-10-16 11:17:08,948:INFO: [META_VALID] spearman: 0.253; mse_loss: 0.165; kl_loss: 155.453; 
+2023-10-16 11:17:12,130:INFO: Episode 1050/4000
+2023-10-16 11:17:12,435:INFO: [META_TRAIN] spearman: 0.299; mse_loss: 0.145; kl_loss: 149.928; 
+2023-10-16 11:17:12,633:INFO: [META_VALID] spearman: 0.250; mse_loss: 0.133; kl_loss: 152.527; 
+2023-10-16 11:17:15,700:INFO: Episode 1100/4000
+2023-10-16 11:17:16,002:INFO: [META_TRAIN] spearman: 0.288; mse_loss: 0.149; kl_loss: 147.092; 
+2023-10-16 11:17:16,202:INFO: [META_VALID] spearman: 0.240; mse_loss: 0.132; kl_loss: 149.725; 
+2023-10-16 11:17:19,384:INFO: Episode 1150/4000
+2023-10-16 11:17:19,722:INFO: [META_TRAIN] spearman: 0.287; mse_loss: 0.154; kl_loss: 144.215; 
+2023-10-16 11:17:19,922:INFO: [META_VALID] spearman: 0.245; mse_loss: 0.153; kl_loss: 146.819; 
+2023-10-16 11:17:22,966:INFO: Episode 1200/4000
+2023-10-16 11:17:23,281:INFO: [META_TRAIN] spearman: 0.284; mse_loss: 0.146; kl_loss: 141.317; 
+2023-10-16 11:17:23,533:INFO: [META_VALID] spearman: 0.230; mse_loss: 0.173; kl_loss: 143.953; 
+2023-10-16 11:17:26,606:INFO: Episode 1250/4000
+2023-10-16 11:17:26,903:INFO: [META_TRAIN] spearman: 0.276; mse_loss: 0.153; kl_loss: 138.367; 
+2023-10-16 11:17:27,114:INFO: [META_VALID] spearman: 0.234; mse_loss: 0.158; kl_loss: 140.866; 
+2023-10-16 11:17:30,185:INFO: Episode 1300/4000
+2023-10-16 11:17:30,486:INFO: [META_TRAIN] spearman: 0.278; mse_loss: 0.152; kl_loss: 135.292; 
+2023-10-16 11:17:30,693:INFO: [META_VALID] spearman: 0.236; mse_loss: 0.208; kl_loss: 137.640; 
+2023-10-16 11:17:33,750:INFO: Episode 1350/4000
+2023-10-16 11:17:34,062:INFO: [META_TRAIN] spearman: 0.281; mse_loss: 0.157; kl_loss: 132.062; 
+2023-10-16 11:17:34,279:INFO: [META_VALID] spearman: 0.251; mse_loss: 0.199; kl_loss: 134.233; 
+2023-10-16 11:17:37,374:INFO: Episode 1400/4000
+2023-10-16 11:17:37,661:INFO: [META_TRAIN] spearman: 0.274; mse_loss: 0.152; kl_loss: 128.681; 
+2023-10-16 11:17:37,870:INFO: [META_VALID] spearman: 0.231; mse_loss: 0.151; kl_loss: 130.950; 
+2023-10-16 11:17:41,017:INFO: Episode 1450/4000
+2023-10-16 11:17:41,328:INFO: [META_TRAIN] spearman: 0.268; mse_loss: 0.160; kl_loss: 124.941; 
+2023-10-16 11:17:41,547:INFO: [META_VALID] spearman: 0.226; mse_loss: 0.157; kl_loss: 127.469; 
+2023-10-16 11:17:44,558:INFO: Episode 1500/4000
+2023-10-16 11:17:44,845:INFO: [META_TRAIN] spearman: 0.271; mse_loss: 0.160; kl_loss: 120.784; 
+2023-10-16 11:17:45,044:INFO: [META_VALID] spearman: 0.237; mse_loss: 0.126; kl_loss: 123.984; 
+2023-10-16 11:17:48,053:INFO: Episode 1550/4000
+2023-10-16 11:17:48,360:INFO: [META_TRAIN] spearman: 0.270; mse_loss: 0.161; kl_loss: 116.733; 
+2023-10-16 11:17:48,565:INFO: [META_VALID] spearman: 0.228; mse_loss: 0.152; kl_loss: 120.671; 
+2023-10-16 11:17:51,741:INFO: Episode 1600/4000
+2023-10-16 11:17:52,043:INFO: [META_TRAIN] spearman: 0.265; mse_loss: 0.161; kl_loss: 112.756; 
+2023-10-16 11:17:52,254:INFO: [META_VALID] spearman: 0.221; mse_loss: 0.133; kl_loss: 117.209; 
+2023-10-16 11:17:55,412:INFO: Episode 1650/4000
+2023-10-16 11:17:55,732:INFO: [META_TRAIN] spearman: 0.273; mse_loss: 0.165; kl_loss: 108.813; 
+2023-10-16 11:17:55,939:INFO: [META_VALID] spearman: 0.237; mse_loss: 0.170; kl_loss: 113.406; 
+2023-10-16 11:17:59,003:INFO: Episode 1700/4000
+2023-10-16 11:17:59,315:INFO: [META_TRAIN] spearman: 0.264; mse_loss: 0.163; kl_loss: 104.894; 
+2023-10-16 11:17:59,477:INFO: [META_VALID] spearman: 0.228; mse_loss: 0.172; kl_loss: 109.708; 
+2023-10-16 11:18:02,520:INFO: Episode 1750/4000
+2023-10-16 11:18:02,819:INFO: [META_TRAIN] spearman: 0.264; mse_loss: 0.157; kl_loss: 100.840; 
+2023-10-16 11:18:03,027:INFO: [META_VALID] spearman: 0.229; mse_loss: 0.111; kl_loss: 105.817; 
+2023-10-16 11:18:06,149:INFO: Episode 1800/4000
+2023-10-16 11:18:06,434:INFO: [META_TRAIN] spearman: 0.263; mse_loss: 0.158; kl_loss: 96.478; 
+2023-10-16 11:18:06,632:INFO: [META_VALID] spearman: 0.228; mse_loss: 0.167; kl_loss: 101.647; 
+2023-10-16 11:18:09,755:INFO: Episode 1850/4000
+2023-10-16 11:18:10,066:INFO: [META_TRAIN] spearman: 0.261; mse_loss: 0.167; kl_loss: 92.087; 
+2023-10-16 11:18:10,254:INFO: [META_VALID] spearman: 0.217; mse_loss: 0.151; kl_loss: 97.442; 
+2023-10-16 11:18:13,357:INFO: Episode 1900/4000
+2023-10-16 11:18:13,669:INFO: [META_TRAIN] spearman: 0.266; mse_loss: 0.166; kl_loss: 87.866; 
+2023-10-16 11:18:13,876:INFO: [META_VALID] spearman: 0.226; mse_loss: 0.207; kl_loss: 93.617; 
+2023-10-16 11:18:16,837:INFO: Episode 1950/4000
+2023-10-16 11:18:17,140:INFO: [META_TRAIN] spearman: 0.265; mse_loss: 0.164; kl_loss: 83.817; 
+2023-10-16 11:18:17,356:INFO: [META_VALID] spearman: 0.237; mse_loss: 0.139; kl_loss: 89.698; 
+2023-10-16 11:18:20,389:INFO: Episode 2000/4000
+2023-10-16 11:18:20,664:INFO: [META_TRAIN] spearman: 0.267; mse_loss: 0.167; kl_loss: 79.890; 
+2023-10-16 11:18:20,850:INFO: [META_VALID] spearman: 0.224; mse_loss: 0.133; kl_loss: 85.875; 
+2023-10-16 11:18:23,808:INFO: Episode 2050/4000
+2023-10-16 11:18:24,121:INFO: [META_TRAIN] spearman: 0.269; mse_loss: 0.165; kl_loss: 75.716; 
+2023-10-16 11:18:24,333:INFO: [META_VALID] spearman: 0.238; mse_loss: 0.169; kl_loss: 81.968; 
+2023-10-16 11:18:27,416:INFO: Episode 2100/4000
+2023-10-16 11:18:27,706:INFO: [META_TRAIN] spearman: 0.261; mse_loss: 0.172; kl_loss: 71.694; 
+2023-10-16 11:18:27,904:INFO: [META_VALID] spearman: 0.216; mse_loss: 0.171; kl_loss: 78.053; 
+2023-10-16 11:18:31,029:INFO: Episode 2150/4000
+2023-10-16 11:18:31,354:INFO: [META_TRAIN] spearman: 0.264; mse_loss: 0.170; kl_loss: 67.759; 
+2023-10-16 11:18:31,557:INFO: [META_VALID] spearman: 0.235; mse_loss: 0.121; kl_loss: 74.334; 
+2023-10-16 11:18:34,656:INFO: Episode 2200/4000
+2023-10-16 11:18:34,964:INFO: [META_TRAIN] spearman: 0.265; mse_loss: 0.169; kl_loss: 64.051; 
+2023-10-16 11:18:35,157:INFO: [META_VALID] spearman: 0.240; mse_loss: 0.113; kl_loss: 70.818; 
+2023-10-16 11:18:38,246:INFO: Episode 2250/4000
+2023-10-16 11:18:38,497:INFO: [META_TRAIN] spearman: 0.261; mse_loss: 0.174; kl_loss: 60.535; 
+2023-10-16 11:18:38,675:INFO: [META_VALID] spearman: 0.223; mse_loss: 0.225; kl_loss: 67.354; 
+2023-10-16 11:18:41,680:INFO: Episode 2300/4000
+2023-10-16 11:18:41,976:INFO: [META_TRAIN] spearman: 0.259; mse_loss: 0.173; kl_loss: 57.171; 
+2023-10-16 11:18:42,160:INFO: [META_VALID] spearman: 0.215; mse_loss: 0.197; kl_loss: 64.131; 
+2023-10-16 11:18:45,242:INFO: Episode 2350/4000
+2023-10-16 11:18:45,573:INFO: [META_TRAIN] spearman: 0.260; mse_loss: 0.173; kl_loss: 53.974; 
+2023-10-16 11:18:45,760:INFO: [META_VALID] spearman: 0.225; mse_loss: 0.178; kl_loss: 61.050; 
+2023-10-16 11:18:48,878:INFO: Episode 2400/4000
+2023-10-16 11:18:49,204:INFO: [META_TRAIN] spearman: 0.262; mse_loss: 0.174; kl_loss: 50.892; 
+2023-10-16 11:18:49,388:INFO: [META_VALID] spearman: 0.236; mse_loss: 0.178; kl_loss: 58.199; 
+2023-10-16 11:18:52,540:INFO: Episode 2450/4000
+2023-10-16 11:18:52,859:INFO: [META_TRAIN] spearman: 0.260; mse_loss: 0.174; kl_loss: 47.983; 
+2023-10-16 11:18:53,067:INFO: [META_VALID] spearman: 0.219; mse_loss: 0.139; kl_loss: 55.405; 
+2023-10-16 11:18:56,138:INFO: Episode 2500/4000
+2023-10-16 11:18:56,419:INFO: [META_TRAIN] spearman: 0.264; mse_loss: 0.172; kl_loss: 45.205; 
+2023-10-16 11:18:56,632:INFO: [META_VALID] spearman: 0.223; mse_loss: 0.162; kl_loss: 52.766; 
+2023-10-16 11:18:59,736:INFO: Episode 2550/4000
+2023-10-16 11:19:00,031:INFO: [META_TRAIN] spearman: 0.260; mse_loss: 0.176; kl_loss: 42.575; 
+2023-10-16 11:19:00,235:INFO: [META_VALID] spearman: 0.229; mse_loss: 0.152; kl_loss: 50.160; 
+2023-10-16 11:19:03,318:INFO: Episode 2600/4000
+2023-10-16 11:19:03,615:INFO: [META_TRAIN] spearman: 0.261; mse_loss: 0.173; kl_loss: 40.083; 
+2023-10-16 11:19:03,811:INFO: [META_VALID] spearman: 0.239; mse_loss: 0.127; kl_loss: 47.718; 
+2023-10-16 11:19:06,818:INFO: Episode 2650/4000
+2023-10-16 11:19:07,129:INFO: [META_TRAIN] spearman: 0.263; mse_loss: 0.172; kl_loss: 37.732; 
+2023-10-16 11:19:07,325:INFO: [META_VALID] spearman: 0.232; mse_loss: 0.199; kl_loss: 45.350; 
+2023-10-16 11:19:10,508:INFO: Episode 2700/4000
+2023-10-16 11:19:10,823:INFO: [META_TRAIN] spearman: 0.263; mse_loss: 0.170; kl_loss: 35.446; 
+2023-10-16 11:19:11,004:INFO: [META_VALID] spearman: 0.219; mse_loss: 0.192; kl_loss: 43.182; 
+2023-10-16 11:19:14,155:INFO: Episode 2750/4000
+2023-10-16 11:19:14,479:INFO: [META_TRAIN] spearman: 0.257; mse_loss: 0.174; kl_loss: 33.112; 
+2023-10-16 11:19:14,674:INFO: [META_VALID] spearman: 0.223; mse_loss: 0.163; kl_loss: 40.979; 
+2023-10-16 11:19:17,712:INFO: Episode 2800/4000
+2023-10-16 11:19:18,018:INFO: [META_TRAIN] spearman: 0.265; mse_loss: 0.174; kl_loss: 31.002; 
+2023-10-16 11:19:18,230:INFO: [META_VALID] spearman: 0.221; mse_loss: 0.213; kl_loss: 38.772; 
+2023-10-16 11:19:21,334:INFO: Episode 2850/4000
+2023-10-16 11:19:21,627:INFO: [META_TRAIN] spearman: 0.260; mse_loss: 0.177; kl_loss: 29.044; 
+2023-10-16 11:19:21,838:INFO: [META_VALID] spearman: 0.239; mse_loss: 0.118; kl_loss: 36.658; 
+2023-10-16 11:19:24,957:INFO: Episode 2900/4000
+2023-10-16 11:19:25,238:INFO: [META_TRAIN] spearman: 0.262; mse_loss: 0.176; kl_loss: 27.188; 
+2023-10-16 11:19:25,426:INFO: [META_VALID] spearman: 0.234; mse_loss: 0.141; kl_loss: 34.921; 
+2023-10-16 11:19:28,417:INFO: Episode 2950/4000
+2023-10-16 11:19:28,706:INFO: [META_TRAIN] spearman: 0.262; mse_loss: 0.175; kl_loss: 25.446; 
+2023-10-16 11:19:28,874:INFO: [META_VALID] spearman: 0.221; mse_loss: 0.196; kl_loss: 33.414; 
+2023-10-16 11:19:32,021:INFO: Episode 3000/4000
+2023-10-16 11:19:32,310:INFO: [META_TRAIN] spearman: 0.269; mse_loss: 0.175; kl_loss: 23.849; 
+2023-10-16 11:19:32,524:INFO: [META_VALID] spearman: 0.234; mse_loss: 0.198; kl_loss: 31.769; 
+2023-10-16 11:19:35,605:INFO: Episode 3050/4000
+2023-10-16 11:19:35,889:INFO: [META_TRAIN] spearman: 0.264; mse_loss: 0.175; kl_loss: 22.345; 
+2023-10-16 11:19:36,092:INFO: [META_VALID] spearman: 0.231; mse_loss: 0.118; kl_loss: 30.359; 
+2023-10-16 11:19:39,208:INFO: Episode 3100/4000
+2023-10-16 11:19:39,510:INFO: [META_TRAIN] spearman: 0.265; mse_loss: 0.175; kl_loss: 20.948; 
+2023-10-16 11:19:39,695:INFO: [META_VALID] spearman: 0.242; mse_loss: 0.245; kl_loss: 29.021; 
+2023-10-16 11:19:42,771:INFO: Episode 3150/4000
+2023-10-16 11:19:43,077:INFO: [META_TRAIN] spearman: 0.263; mse_loss: 0.177; kl_loss: 19.629; 
+2023-10-16 11:19:43,273:INFO: [META_VALID] spearman: 0.217; mse_loss: 0.194; kl_loss: 27.888; 
+2023-10-16 11:19:46,428:INFO: Episode 3200/4000
+2023-10-16 11:19:46,737:INFO: [META_TRAIN] spearman: 0.259; mse_loss: 0.177; kl_loss: 18.422; 
+2023-10-16 11:19:46,917:INFO: [META_VALID] spearman: 0.218; mse_loss: 0.200; kl_loss: 26.456; 
+2023-10-16 11:19:50,044:INFO: Episode 3250/4000
+2023-10-16 11:19:50,352:INFO: [META_TRAIN] spearman: 0.261; mse_loss: 0.175; kl_loss: 17.281; 
+2023-10-16 11:19:50,560:INFO: [META_VALID] spearman: 0.224; mse_loss: 0.236; kl_loss: 25.303; 
+2023-10-16 11:19:53,724:INFO: Episode 3300/4000
+2023-10-16 11:19:54,020:INFO: [META_TRAIN] spearman: 0.262; mse_loss: 0.176; kl_loss: 16.205; 
+2023-10-16 11:19:54,221:INFO: [META_VALID] spearman: 0.231; mse_loss: 0.167; kl_loss: 24.381; 
+2023-10-16 11:19:57,339:INFO: Episode 3350/4000
+2023-10-16 11:19:57,640:INFO: [META_TRAIN] spearman: 0.264; mse_loss: 0.176; kl_loss: 15.192; 
+2023-10-16 11:19:57,838:INFO: [META_VALID] spearman: 0.228; mse_loss: 0.155; kl_loss: 23.715; 
+2023-10-16 11:20:00,843:INFO: Episode 3400/4000
+2023-10-16 11:20:01,158:INFO: [META_TRAIN] spearman: 0.263; mse_loss: 0.176; kl_loss: 14.260; 
+2023-10-16 11:20:01,372:INFO: [META_VALID] spearman: 0.225; mse_loss: 0.195; kl_loss: 22.692; 
+2023-10-16 11:20:04,553:INFO: Episode 3450/4000
+2023-10-16 11:20:04,856:INFO: [META_TRAIN] spearman: 0.260; mse_loss: 0.175; kl_loss: 13.388; 
+2023-10-16 11:20:05,060:INFO: [META_VALID] spearman: 0.223; mse_loss: 0.137; kl_loss: 21.913; 
+2023-10-16 11:20:08,156:INFO: Episode 3500/4000
+2023-10-16 11:20:08,442:INFO: [META_TRAIN] spearman: 0.263; mse_loss: 0.177; kl_loss: 12.572; 
+2023-10-16 11:20:08,641:INFO: [META_VALID] spearman: 0.231; mse_loss: 0.196; kl_loss: 21.166; 
+2023-10-16 11:20:11,675:INFO: Episode 3550/4000
+2023-10-16 11:20:11,988:INFO: [META_TRAIN] spearman: 0.263; mse_loss: 0.175; kl_loss: 11.811; 
+2023-10-16 11:20:12,180:INFO: [META_VALID] spearman: 0.218; mse_loss: 0.168; kl_loss: 20.529; 
+2023-10-16 11:20:15,262:INFO: Episode 3600/4000
+2023-10-16 11:20:15,550:INFO: [META_TRAIN] spearman: 0.266; mse_loss: 0.178; kl_loss: 11.101; 
+2023-10-16 11:20:15,743:INFO: [META_VALID] spearman: 0.233; mse_loss: 0.141; kl_loss: 19.934; 
+2023-10-16 11:20:18,814:INFO: Episode 3650/4000
+2023-10-16 11:20:19,117:INFO: [META_TRAIN] spearman: 0.262; mse_loss: 0.177; kl_loss: 10.437; 
+2023-10-16 11:20:19,328:INFO: [META_VALID] spearman: 0.225; mse_loss: 0.178; kl_loss: 19.362; 
+2023-10-16 11:20:22,403:INFO: Episode 3700/4000
+2023-10-16 11:20:22,690:INFO: [META_TRAIN] spearman: 0.263; mse_loss: 0.177; kl_loss: 9.816; 
+2023-10-16 11:20:22,879:INFO: [META_VALID] spearman: 0.224; mse_loss: 0.149; kl_loss: 18.771; 
+2023-10-16 11:20:25,911:INFO: Episode 3750/4000
+2023-10-16 11:20:26,228:INFO: [META_TRAIN] spearman: 0.261; mse_loss: 0.178; kl_loss: 9.238; 
+2023-10-16 11:20:26,443:INFO: [META_VALID] spearman: 0.232; mse_loss: 0.119; kl_loss: 18.331; 
+2023-10-16 11:20:29,535:INFO: Episode 3800/4000
+2023-10-16 11:20:29,840:INFO: [META_TRAIN] spearman: 0.264; mse_loss: 0.176; kl_loss: 8.703; 
+2023-10-16 11:20:30,031:INFO: [META_VALID] spearman: 0.237; mse_loss: 0.136; kl_loss: 18.008; 
+2023-10-16 11:20:33,095:INFO: Episode 3850/4000
+2023-10-16 11:20:33,373:INFO: [META_TRAIN] spearman: 0.262; mse_loss: 0.177; kl_loss: 8.184; 
+2023-10-16 11:20:33,577:INFO: [META_VALID] spearman: 0.222; mse_loss: 0.145; kl_loss: 17.292; 
+2023-10-16 11:20:36,595:INFO: Episode 3900/4000
+2023-10-16 11:20:36,869:INFO: [META_TRAIN] spearman: 0.262; mse_loss: 0.176; kl_loss: 7.707; 
+2023-10-16 11:20:37,074:INFO: [META_VALID] spearman: 0.232; mse_loss: 0.185; kl_loss: 16.675; 
+2023-10-16 11:20:40,185:INFO: Episode 3950/4000
+2023-10-16 11:20:40,484:INFO: [META_TRAIN] spearman: 0.263; mse_loss: 0.177; kl_loss: 7.262; 
+2023-10-16 11:20:40,671:INFO: [META_VALID] spearman: 0.218; mse_loss: 0.166; kl_loss: 16.169; 
+2023-10-16 11:20:43,787:INFO: Episode 4000/4000
+2023-10-16 11:20:44,095:INFO: [META_TRAIN] spearman: 0.264; mse_loss: 0.177; kl_loss: 6.843; 
+2023-10-16 11:20:44,294:INFO: [META_VALID] spearman: 0.230; mse_loss: 0.150; kl_loss: 15.890; 

@@ -2,7 +2,7 @@ python main.py\
 	--mode meta-train\
 	--seed 42\
 	--meta_lr 5e-5\
-	--layer_size 90\
+	--layer_size 250\
 	--num_episodes 4000\
 	--meta_train_devices 'galaxy_s10_cpu_head,galaxy_s10_gpu_head,galaxy_s22_nnapi_head'\
 	--meta_valid_devices 'galaxy_s22_cpu_head,galaxy_s22_gpu_head'\
